@@ -1,0 +1,60 @@
+MODULE = timetable
+
+OBJS =  cif/files/add.o \
+	cif/files/sort.o \
+	cif/files/scan.o
+	
+OBJS += cif/parser/free.o \
+	cif/parser/init.o \
+	cif/parser/parse.o \
+	cif/parser/parseFile.o
+
+OBJS += cif/timetable/getTiploc.o \
+	cif/timetable/initParser.o \
+	cif/timetable/load.o \
+	cif/timetable/new.o \
+	cif/timetable/purge.o \
+	cif/timetable/scheduleEntry.o \
+	cif/timetable/save.o
+
+OBJS += cif/timetable/records/aa.o \
+	cif/timetable/records/bs.o \
+	cif/timetable/records/hd.o \
+	cif/timetable/records/li.o \
+	cif/timetable/records/lo.o \
+	cif/timetable/records/lt.o \
+	cif/timetable/records/td.o \
+	cif/timetable/records/ti_tu.o \
+	cif/timetable/records/zz.o
+
+OBJS += cif/timetable/schedule/read.o \
+	cif/timetable/schedule/save.o
+
+OBJS += cif/timetable/tiploc/read.o \
+	cif/timetable/tiploc/save.o
+
+OBJS += cif/uid/hash.o \
+	cif/uid/parse.o
+
+#OBJS += cif/linkedmap/forEach.o \
+#	cif/linkedmap/get.o \
+#	cif/linkedmap/getStats.o \
+#	cif/linkedmap/log.o \
+#	cif/linkedmap/new.o \
+#	cif/linkedmap/put.o \
+#	cif/linkedmap/remove.o \
+#	cif/linkedmap/removeIf.o \
+#	cif/linkedmap/write.o
+
+OBJS += cif/util/readDateTime.o \
+	cif/util/readInt.o \
+	cif/util/readString.o \
+	cif/util/readTime.o
+
+OBJS += search/append_tiploc.o \
+	search/find_crs.o \
+	search/find_stanox.o \
+	search/find_tiploc.o \
+	search/index.o
+
+include ../SubMakefile
