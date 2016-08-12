@@ -16,12 +16,13 @@
  */
 
 static bool writeSchedule(void *k, void *v, void *c) {
-    struct Schedule *s = (struct Schedule *)v;
+    struct Schedule *s = (struct Schedule *) v;
     FILE *f = (FILE *) c;
+
+    fwrite(s, sizeof (struct Schedule), 1, f);
     
-    int entries = s->numEntries;
-    fwrite(s++, sizeof(struct Schedule), 1, f);
-    fwrite(s, sizeof(struct ScheduleEntry), entries, f);
+    if (s->numEntries > 0)
+        fwrite(s->entries, sizeof (struct ScheduleEntry), s->numEntries, f);
 
     return true;
 }
@@ -29,7 +30,7 @@ static bool writeSchedule(void *k, void *v, void *c) {
 int tt_schedule_write(Hashmap *m, char *filename) {
 
     logconsole("Writing schedule to %s", filename);
-    
+
     backupFile(filename);
 
     FILE *f = fopen(filename, "w");

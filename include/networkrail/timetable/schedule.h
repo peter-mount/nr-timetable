@@ -29,12 +29,6 @@ extern "C" {
         char stpInd;
     };
 
-    extern bool hashmapScheduleIdEquals(void *key_a, void *key_b);
-    extern int hashmapScheduleIdHash(void *str);
-    extern int tt_parse_scheduleId(struct CIFParser *parser, struct ScheduleId *id);
-    extern int tt_schedule_write(Hashmap *m, char *filename);
-    extern int tt_schedule_load(Hashmap *m, char *filename);
-    
     // Association
 
     struct Assoc {
@@ -102,6 +96,22 @@ extern "C" {
         struct ScheduleEntry *entries;
     };
 
+    extern bool hashmapScheduleIdEquals(void *key_a, void *key_b);
+    extern int hashmapScheduleIdHash(void *str);
+    extern int tt_parse_scheduleId(struct CIFParser *parser, struct ScheduleId *id);
+    extern int tt_schedule_write(Hashmap *m, char *filename);
+    extern int tt_schedule_load(Hashmap *m, char *filename);
+    
+    extern void tt_append_schedule(struct charbuffer *b, struct Schedule *e);
+    extern void tt_append_schedule_node(struct charbuffer *b, struct Node *n);
+    
+    extern void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e);
+    
+    extern void append_hhmm(struct charbuffer *b, char *n, int tm);
+    extern void append_hhmmss(struct charbuffer *b, char *n, int tm);
+    
+    extern void tt_get_schedules_by_uid(struct charbuffer *b, const char *tiploc);
+    
 #ifdef __cplusplus
 }
 #endif

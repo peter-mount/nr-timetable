@@ -10,7 +10,7 @@
 
 extern struct TimeTable *timetable;
 
-static void add(Hashmap *m, void *k, struct TTTiploc *e) {
+static void add(Hashmap *m, void *k, void *e) {
     struct List *l = (struct List *) hashmapGet(m, k);
     if (!l) {
         l = (struct List *) malloc(sizeof (struct List));
@@ -22,7 +22,7 @@ static void add(Hashmap *m, void *k, struct TTTiploc *e) {
     list_addTail(l, n);
 }
 
-static bool writeTiploc(void *k, void *v, void *c) {
+static bool indexTiploc(void *k, void *v, void *c) {
     struct TTTiploc *t = (struct TTTiploc *) v;
 
     // Should be 1-1 linkage here
@@ -40,7 +40,20 @@ static bool writeTiploc(void *k, void *v, void *c) {
     return true;
 }
 
+static bool indexSchedule(void *k, void *v, void *c) {
+    struct Schedule *s = (struct Schedule *)v;
+    
+    // schedule uuid
+    add(timetable->uid,s->id.uid,s);
+    
+    return true;
+}
+
 void tt_index() {
-    logconsole("Indexing tiploc");
-    hashmapForEach(timetable->loc, writeTiploc, NULL);
+    logconsole("Indexing tiplocs");
+    hashmapForEach(timetable->loc, indexTiploc, NULL);
+    
+    logconsole("Indexing schedules");
+    hashmapForEach(timetable->schedules, indexSchedule, NULL);
+    logconsole("Schedules %d uids %d", hashmapSize(timetable->schedules),hashmapSize(timetable->uid));
 }

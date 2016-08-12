@@ -65,13 +65,15 @@ extern "C" {
         // =======================
         // Only used by timetabled
         // =======================
-
+        
         // CRS->tiploc index
         Hashmap *crsTiploc;
         
         // Stanox->tiploc index. Entries are Lists as it's 1->n relationship
         Hashmap *stanoxTiploc;
 
+        // Schedule UID. Entries are lists of entries
+        Hashmap *uid;
     };
 
     extern void purgeExpiredSchedule(struct Schedule *s);

@@ -10,17 +10,22 @@
 #include <area51/string.h>
 
 static bool read(Hashmap *m, FILE *f) {
-    // Read the schedule to get the number of entries
-    struct Schedule temp;
-    fread(&temp, sizeof (struct Schedule), 1, f);
-
     // Now allocate the true entry of the right size and insert into the map
-    struct Schedule *s = (struct Schedule *) malloc(sizeof (struct Schedule) + (temp.numEntries * sizeof (struct ScheduleEntry)));
+    struct Schedule *s = (struct Schedule *) malloc(sizeof (struct Schedule));
     if (s) {
-        memcpy(s, &temp, sizeof (struct Schedule));
+        memset(s,0,sizeof(struct Schedule));
+        fread(s, sizeof (struct Schedule), 1, f);
 
-        struct Schedule *e = &s[1];
-        fread(e, sizeof (struct ScheduleEntry), temp.numEntries, f);
+        if (s->numEntries > 0) {
+            s->entries = (struct ScheduleEntry *) malloc(s->numEntries * sizeof (struct ScheduleEntry));
+            if (!s->entries) {
+                free(s);
+                return false;
+            } else
+                fread(s->entries, sizeof (struct ScheduleEntry), s->numEntries, f);
+        } else
+            s->entries = NULL;
+
         hashmapPut(m, &s->id, s);
         return true;
     }

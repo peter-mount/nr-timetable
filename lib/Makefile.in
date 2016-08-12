@@ -51,10 +51,20 @@ OBJS += cif/util/readDateTime.o \
 	cif/util/readString.o \
 	cif/util/readTime.o
 
-OBJS += search/append_tiploc.o \
-	search/find_crs.o \
-	search/find_stanox.o \
-	search/find_tiploc.o \
-	search/index.o
+# Seaarch Rest interfaces
+
+OBJS += search/index.o
+
+# schedules
+OBJS += search/schedule/append_entry.o \
+	search/schedule/append_schedule.o \
+	search/schedule/append_time.o \
+	search/schedule/get_schedule.o
+
+# tiplocs
+OBJS += search/tiploc/append_tiploc.o \
+	search/tiploc/find_crs.o \
+	search/tiploc/find_stanox.o \
+	search/tiploc/find_tiploc.o
 
 include ../SubMakefile

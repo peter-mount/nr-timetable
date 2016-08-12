@@ -31,8 +31,8 @@ TARGET_APPS = $(patsubst %, ${BIN_DIR}/%, $(APPS))
 all: ${BIN_DIR}/ttimport
 
 clean:
-	rm -rf $(DIR)
-	rm -f $(TARGET)
+#	rm -rf $(DIR)
+#	rm -f $(TARGET)
 
 $(DIR)/%.o: %.c
 	@mkdir -p $(@D)

@@ -14,8 +14,11 @@ struct TimeTable *timetable_new() {
     tt->schedules = hashmapCreate(100, hashmapScheduleIdHash, hashmapScheduleIdEquals);
 
     // api only
+    
     tt->crsTiploc = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
     tt->stanoxTiploc = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
+    
+    tt->uid = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
     
     return tt;
 }

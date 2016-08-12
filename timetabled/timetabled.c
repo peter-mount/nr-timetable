@@ -77,6 +77,12 @@ static int opendb() {
     if (ret)
         return EXIT_FAILURE;
 
+    db = genurl(database, ".sch");
+    ret = tt_schedule_load(timetable->schedules, db);
+    free(db);
+    if (ret)
+        return EXIT_FAILURE;
+
     return EXIT_SUCCESS;
 }
 
@@ -110,6 +116,8 @@ int main(int argc, char** argv) {
     webserver_add_search_str("/tiploc", corpus_find_tiploc);
      */
 
+    webserver_add_search_str("/schedule/uid", tt_get_schedules_by_uid);
+    
     logconsole("Starting webserver on port %d", webserver.port);
     webserver_start();
 
