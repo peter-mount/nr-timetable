@@ -35,13 +35,18 @@ int tt_parse_loc_terminating(struct CIFParser *parser) {
 
     offset = cif_readSeconds_hhmm_r(parser->buf, offset, &e->pta);
 
-    offset = cif_readString(parser->buf, offset, e->platform, 3);
-    offset = cif_readString(parser->buf, offset, e->path, 3);
+    e->platform = tt_idmap_add_r(parser->buf, offset, 3);
+    offset += 3;
+    
+    e->path = tt_idmap_add_r(parser->buf, offset, 3);
+    offset += 3;
 
     e->activity=ttref_parse_activity(&parser->buf[offset]);
     offset+=12;
 
     offset = cif_readString(parser->buf, offset, e->resThameslink, 3);
+    if(e->resThameslink[0])
+        logconsole("TL \"%s\"",e->resThameslink);
 
     return EXIT_SUCCESS;
 }

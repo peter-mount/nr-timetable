@@ -61,16 +61,16 @@ extern "C" {
         int wtd;
         int wtp;
         //
-        char platform[4];
-        char line[4];
-        char path[4];
-        // 6x2
-        unsigned long activity:36;
-        unsigned long :28;
-        
-        char engAllow[3];
-        char pathAllow[3];
-        char perfAllow[3];
+        unsigned long activity : 36;
+        unsigned int platform : 14;
+        unsigned long line : 14;
+
+        unsigned long path : 14;
+        unsigned long engAllow : 14;
+        unsigned long pathAllow : 14;
+        unsigned long perfAllow : 14;
+        unsigned long : 8;
+
         // reserved for Thameslink: LO and LT 3 chars, LI 5 chars
         char resThameslink[6];
     };
@@ -111,7 +111,7 @@ extern "C" {
 
         char timingLoad[5];
         int speed;
-        
+
         int numEntries;
         struct ScheduleEntry *entries;
     };

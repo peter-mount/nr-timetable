@@ -24,19 +24,6 @@
  * 
  */
 
-static bool writeSchedule(void *k, void *v, void *c) {
-    FILE *f = (FILE *) c;
-    if (fwrite(v, sizeof (struct Schedule), 1, f) == sizeof (struct Schedule))
-        return false;
-
-    struct Schedule *s = (struct Schedule *) v;
-    int size = sizeof (struct Schedule) + (s->numEntries * sizeof (struct ScheduleEntry));
-    fwrite(&size, sizeof (int), 1, f);
-    fwrite(s, size, 1, f);
-
-    return true;
-}
-
 int timetable_save(struct TimeTable *tt, char *filename) {
     logconsole("Writing timetable %s", filename);
 
@@ -48,7 +35,8 @@ int timetable_save(struct TimeTable *tt, char *filename) {
     free(db);
     if (!f) ret = EXIT_FAILURE;
     else {
-        fwrite(&tt->header, sizeof (struct TTHeader), 1, f);
+        //fwrite(&tt->header, sizeof (struct TTHeader), 1, f);
+        tt_idmap_write(f);
         fclose(f);
     }
 

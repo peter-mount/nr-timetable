@@ -71,7 +71,15 @@ static int parseargs(int argc, char** argv) {
 }
 
 static int opendb() {
-    char *db = genurl(database, ".loc");
+    char *db = genurl(database, ".db");
+    FILE *f = fopen(db,"r");
+    free(db);
+    if(!f)
+        return EXIT_FAILURE;
+    tt_idmap_read(f);
+    fclose(f);
+
+    db = genurl(database, ".loc");
     int ret = tt_tiploc_read(timetable->loc, db);
     free(db);
     if (ret)

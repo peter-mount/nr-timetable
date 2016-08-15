@@ -24,5 +24,9 @@ struct TimeTable *timetable_new() {
     
     tt->uid = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
     
+    // see idmap.c
+    tt->idmap = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
+    tt->txtmap = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
+    
     return tt;
 }

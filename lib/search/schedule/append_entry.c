@@ -36,40 +36,39 @@ void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
         if (e->wtd) append_hhmmss(b, "wtd", e->wtd);
         if (e->wtp) append_hhmmss(b, "wtp", e->wtp);
 
-        if (e->platform[0]) {
+        if (e->platform) {
             charbuffer_append(b, ",\"platform\":");
-            json_append_str(b, e->platform);
+            json_append_str(b, tt_idmap_get(e->platform));
         }
 
-        if (e->line[0]) {
+        if (e->line) {
             charbuffer_append(b, ",\"line\":");
-            json_append_str(b, e->line);
+            json_append_str(b, tt_idmap_get(e->line));
         }
 
-        if (e->path[0]) {
+        if (e->path) {
             charbuffer_append(b, ",\"path\":");
-            json_append_str(b, e->path);
+            json_append_str(b, tt_idmap_get(e->path));
         }
 
-        // activity
         if (e->activity) {
             charbuffer_append(b, ",\"activity\":");
             ttref_print_activity(b, e->activity);
         }
 
-        if (e->engAllow[0]) {
+        if (e->engAllow) {
             charbuffer_append(b, ",\"engAllow\":");
-            json_append_str(b, e->engAllow);
+            json_append_str(b, tt_idmap_get(e->engAllow));
         }
 
-        if (e->pathAllow[0]) {
+        if (e->pathAllow) {
             charbuffer_append(b, ",\"pathAllow\":");
-            json_append_str(b, e->pathAllow);
+            json_append_str(b, tt_idmap_get(e->pathAllow));
         }
 
-        if (e->perfAllow[0]) {
+        if (e->perfAllow) {
             charbuffer_append(b, ",\"perfAllow\":");
-            json_append_str(b, e->perfAllow);
+            json_append_str(b, tt_idmap_get(e->perfAllow));
         }
 
         if (e->resThameslink[0]) {

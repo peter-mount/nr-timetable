@@ -36,7 +36,8 @@ OBJS += cif/timetable/tiploc/read.o \
 OBJS += cif/uid/hash.o \
 	cif/uid/parse.o
 
-OBJS += cif/util/readDateTime.o \
+OBJS += cif/util/idmap.o \
+	cif/util/readDateTime.o \
 	cif/util/readInt.o \
 	cif/util/readString.o \
 	cif/util/readTime.o

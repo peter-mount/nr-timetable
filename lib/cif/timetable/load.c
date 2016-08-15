@@ -39,7 +39,8 @@ int timetable_load(struct TimeTable *tt, char *filename) {
     free(db);
     if (!f) ret = EXIT_FAILURE;
     else {
-        fread(&tt->header, sizeof (struct TTHeader), 1, f);
+        //fread(&tt->header, sizeof (struct TTHeader), 1, f);
+        tt_idmap_read(f);
         fclose(f);
     }
 
@@ -52,7 +53,7 @@ int timetable_load(struct TimeTable *tt, char *filename) {
         //if (!f) ret = EXIT_FAILURE;
         //else {
         //    hashmapRead(tt->loc, readTiploc, f);
-        
+
         // Ensure tt->locSeq is the true next version if we create a new tiploc
         if (!ret) {
             tt->locSeq = 0;
@@ -62,10 +63,10 @@ int timetable_load(struct TimeTable *tt, char *filename) {
             logconsole("Next tiploc idSeq %d", (int) tt->locSeq);
         }
     }
-    
-    if(!ret) {
-        db = genurl(filename,".sch");
-        ret = tt_schedule_load(tt->schedules,db);
+
+    if (!ret) {
+        db = genurl(filename, ".sch");
+        ret = tt_schedule_load(tt->schedules, db);
         free(db);
     }
 

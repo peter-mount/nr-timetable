@@ -11,6 +11,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <area51/list.h>
 #include <area51/hashmap.h>
@@ -54,6 +55,7 @@ extern "C" {
 
         // The current schedule header
         struct TTHeader header;
+        
         // Tiplocs
         short locSeq;
         Hashmap *loc;
@@ -62,6 +64,12 @@ extern "C" {
         // Schedule data
         Hashmap *schedules;
 
+        // =======================
+        // Used in meta data to hold common strings, platform's etc
+        // =======================
+        Hashmap *idmap;
+        Hashmap *txtmap;
+        
         // =======================
         // Only used by timetabled
         // =======================
@@ -101,6 +109,12 @@ extern "C" {
     extern void tt_index();
 
     extern const char *ttref_portionId(char v);
+    
+    extern int tt_idmap_add(char *k);
+    extern int tt_idmap_add_r(char *k, int o, int l);
+    extern char *tt_idmap_get(int k);
+    extern void tt_idmap_read(FILE *f);
+    extern void tt_idmap_write(FILE *f);
     
 #ifdef __cplusplus
 }
