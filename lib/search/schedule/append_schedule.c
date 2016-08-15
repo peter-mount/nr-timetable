@@ -68,6 +68,9 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
         charbuffer_append(b, ",\"end\":");
         json_append_date_ISO(b, &e->end);
 
+        tt_append_tiploc_field(b,"origin",e->origin);
+        tt_append_tiploc_field(b,"dest",e->dest);
+        
         // daysRun
         charbuffer_append(b, ",\"daysRunV\":[]");
 

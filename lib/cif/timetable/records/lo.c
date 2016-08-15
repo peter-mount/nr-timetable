@@ -15,7 +15,7 @@ int tt_parse_loc_origin(struct CIFParser *parser) {
         logconsole("LO without a current schedule?");
         return EXIT_FAILURE;
     }
-    
+
     struct ScheduleEntry *e = tt_parse_nextScheduleEntry(t);
     memset(e, 0, sizeof (struct ScheduleEntry));
 
@@ -27,7 +27,7 @@ int tt_parse_loc_origin(struct CIFParser *parser) {
     char tiploc[10];
     offset = cif_readString(parser->buf, offset, tiploc, 7);
     struct TTTiploc *tpl = tt_getTiploc(t, tiploc);
-    e->tiploc = tpl->id;
+    s->origin = e->tiploc = tpl->id;
 
     // Tiploc suffix for circular routes
     e->tiplocseq = parser->buf[offset++];

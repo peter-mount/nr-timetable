@@ -37,6 +37,7 @@ extern "C" {
     extern void tt_find_tiploc(struct charbuffer *b, const char *tiploc);
     extern void tt_find_tiploc_by_crs(struct charbuffer *b, const char *crs);
     extern void tt_find_tiploc_by_stanox(struct charbuffer *b, int stanox);
+    extern void tt_append_tiploc_field(struct charbuffer *b, char *n, short tiploc);
     extern void tt_append_tiploc(struct charbuffer *b, struct TTTiploc *tpl);
     extern void tt_append_tiploc_node(struct charbuffer *b, struct Node *n);
 

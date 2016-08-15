@@ -14,11 +14,13 @@
 extern struct TimeTable *timetable;
 
 void mapTiploc_addTiploc(Hashmap *m, short tiploc) {
-    struct TTTiploc *tpl = (struct TTTiploc *) hashmapGet(m, &tiploc);
-    if (!tpl) {
-        tpl = (struct TTTiploc *) hashmapGet(timetable->idTiploc, &tiploc);
+    if (tiploc > 0) {
+        struct TTTiploc *tpl = (struct TTTiploc *) hashmapGet(m, &tiploc);
+        if (!tpl) {
+            tpl = (struct TTTiploc *) hashmapGet(timetable->idTiploc, &tiploc);
 
-        if (tpl)
-            hashmapPut(m, &tpl->id, tpl);
+            if (tpl)
+                hashmapPut(m, &tpl->id, tpl);
+        }
     }
 }

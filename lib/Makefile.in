@@ -53,6 +53,7 @@ OBJS += search/schedule/append_entry.o \
 
 # tiplocs
 OBJS += search/tiploc/append_tiploc.o \
+	search/tiploc/append_tiploc_field.o \
 	search/tiploc/find_crs.o \
 	search/tiploc/find_stanox.o \
 	search/tiploc/find_tiploc.o

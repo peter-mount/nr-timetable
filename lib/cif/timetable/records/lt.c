@@ -13,7 +13,7 @@ int tt_parse_loc_terminating(struct CIFParser *parser) {
     struct Schedule *s = t->curschedule;
     if (!s)
         return EXIT_FAILURE;
-    
+
     struct ScheduleEntry *e = tt_parse_nextScheduleEntry(t);
     memset(e, 0, sizeof (struct ScheduleEntry));
 
@@ -25,7 +25,7 @@ int tt_parse_loc_terminating(struct CIFParser *parser) {
     char tiploc[10];
     offset = cif_readString(parser->buf, offset, tiploc, 7);
     struct TTTiploc *tpl = tt_getTiploc(t, tiploc);
-    e->tiploc = tpl->id;
+    s->dest = e->tiploc = tpl->id;
 
     // Tiploc suffix for circular routes
     e->tiplocseq = parser->buf[offset++];
@@ -36,7 +36,7 @@ int tt_parse_loc_terminating(struct CIFParser *parser) {
 
     offset = cif_readString(parser->buf, offset, e->platform, 3);
     offset = cif_readString(parser->buf, offset, e->path, 3);
-    
+
     for (int i = 0; i < 6; i++)
         offset = cif_readString(parser->buf, offset, e->activity[i], 2);
 

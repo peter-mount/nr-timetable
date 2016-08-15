@@ -76,8 +76,11 @@ extern "C" {
     struct Schedule {
         //struct Node node;
         struct ScheduleId id;
-        //struct List entries;
         time_t end;
+        // Origin tiploc
+        short origin;
+        // destination tiploc
+        short dest;
         char daysRun;
         char bankHolRun;
         char status[2];

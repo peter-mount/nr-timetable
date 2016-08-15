@@ -11,8 +11,6 @@
 #include <area51/list.h>
 #include <area51/log.h>
 
-extern struct TimeTable *timetable;
-
 void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
     if (e) {
         charbuffer_append(b, "{\"type\":\"");
@@ -20,12 +18,7 @@ void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
         charbuffer_add(b, 'L');
         charbuffer_add(b, e->type);
 
-        charbuffer_append(b, "\",\"tiploc\":");
-        struct TTTiploc *tpl = (struct TTTiploc *) hashmapGet(timetable->idTiploc, &e->tiploc);
-        if (tpl)
-            json_append_str(b, tpl->tiploc);
-        else
-            json_append_int(b, (int) e->tiploc);
+        tt_append_tiploc_field(b,"tiploc",e->tiploc);
 
         if (e->tiplocseq && e->tiplocseq != ' ') {
             charbuffer_append(b, ",\"tiplocSeq\":\"");
