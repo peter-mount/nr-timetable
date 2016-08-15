@@ -42,7 +42,8 @@ OBJS += cif/util/readDateTime.o \
 	cif/util/readTime.o
 
 # Reference data defined within the CIF specs
-OBJS += data/bankHoliday.o \
+OBJS += data/activity.o \
+	data/bankHoliday.o \
 	data/catering.o \
 	data/daysRun.o \
 	data/operatingCharacteristics.o \

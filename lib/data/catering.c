@@ -33,7 +33,7 @@ int ttref_parse_catering(char *v) {
                     c = c << 3;
                     c |= i;
                 }
-    return 0;
+    return c;
 }
 
 void ttref_print_catering(struct charbuffer *b, int dr) {
@@ -43,7 +43,7 @@ void ttref_print_catering(struct charbuffer *b, int dr) {
         bool first = true;
         int m = 3;
         for (int i = 0; i < 4; i++) {
-            int v = i&m;
+            int v = dr&m;
             m = m << 3;
             if (v) {
                 charbuffer_add(b, first ? '[' : ',');

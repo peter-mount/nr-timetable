@@ -65,7 +65,9 @@ extern "C" {
         char line[4];
         char path[4];
         // 6x2
-        char activity[6][3];
+        unsigned long activity:36;
+        unsigned long :28;
+        
         char engAllow[3];
         char pathAllow[3];
         char perfAllow[3];

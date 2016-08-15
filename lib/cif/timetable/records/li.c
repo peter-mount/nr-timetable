@@ -4,6 +4,7 @@
 
 #include <networkrail/timetable.h>
 #include <networkrail/timetable/cif.h>
+#include <networkrail/timetable/lookupTable.h>
 #include <networkrail/timetable/schedule.h>
 #include <area51/cif.h>
 #include <area51/log.h>
@@ -41,8 +42,8 @@ int tt_parse_loc_intermediate(struct CIFParser *parser) {
     offset = cif_readString(parser->buf, offset, e->line, 3);
     offset = cif_readString(parser->buf, offset, e->path, 3);
 
-    for (int i = 0; i < 6; i++)
-        offset = cif_readString(parser->buf, offset, e->activity[i], 2);
+    e->activity=ttref_parse_activity(&parser->buf[offset]);
+    offset+=12;
 
     offset = cif_readString(parser->buf, offset, e->engAllow, 2);
     offset = cif_readString(parser->buf, offset, e->pathAllow, 2);

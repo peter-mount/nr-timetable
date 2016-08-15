@@ -5,6 +5,7 @@
 #include <area51/json.h>
 #include <area51/rest.h>
 #include <networkrail/timetable.h>
+#include <networkrail/timetable/lookupTable.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -20,7 +21,7 @@ void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
         charbuffer_add(b, '\"');
 
         charbuffer_add(b, ',');
-        tt_append_tiploc_field(b,"tiploc",e->tiploc);
+        tt_append_tiploc_field(b, "tiploc", e->tiploc);
 
         if (e->tiplocseq && e->tiplocseq != ' ') {
             charbuffer_append(b, ",\"tiplocSeq\":\"");
@@ -51,20 +52,10 @@ void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
         }
 
         // activity
-        char ac = 0;
-        for (int i = 0; i < 6; i++) {
-            if (e->activity[i][0]) {
-                if (ac)
-                    charbuffer_add(b, ac);
-                else {
-                    charbuffer_append(b, ",\"activity\":[");
-                    ac = ',';
-                }
-                json_append_str(b, e->activity[i]);
-            }
+        if (e->activity) {
+            charbuffer_append(b, ",\"activity\":");
+            ttref_print_activity(b, e->activity);
         }
-        if (ac)
-            charbuffer_add(b, ']');
 
         if (e->engAllow[0]) {
             charbuffer_append(b, ",\"engAllow\":");

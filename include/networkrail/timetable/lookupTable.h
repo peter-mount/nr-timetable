@@ -20,6 +20,9 @@
 extern "C" {
 #endif
 
+    extern long ttref_parse_activity(char *v);
+    extern void ttref_print_activity(struct charbuffer *b, long dr);
+    
     extern int ttref_parse_bankHoliday(char v);
     extern char *ttref_print_bankHoliday(int id);
 

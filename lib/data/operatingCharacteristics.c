@@ -39,7 +39,7 @@ int ttref_parse_opchar(char *v) {
                     c = c << 4;
                     c |= i;
                 }
-    return 0;
+    return c;
 }
 
 void ttref_print_opchar(struct charbuffer *b, int dr) {
@@ -49,7 +49,7 @@ void ttref_print_opchar(struct charbuffer *b, int dr) {
         bool first = true;
         int m = 7;
         for (int i = 0; i < 6; i++) {
-            int v = i&m;
+            int v = dr&m;
             m = m << 4; 
             if (v) {
                 charbuffer_add(b, first ? '[' : ',');
