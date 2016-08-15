@@ -17,7 +17,9 @@ void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
         // TODO e->type=='R" then use C not L here
         charbuffer_add(b, 'L');
         charbuffer_add(b, e->type);
+        charbuffer_add(b, '\"');
 
+        charbuffer_add(b, ',');
         tt_append_tiploc_field(b,"tiploc",e->tiploc);
 
         if (e->tiplocseq && e->tiplocseq != ' ') {

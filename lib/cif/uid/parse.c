@@ -13,8 +13,7 @@ int tt_parse_scheduleId(struct CIFParser *parser, struct ScheduleId *id) {
     memset(id, 0, sizeof (struct ScheduleId));
     int o = 3;
     o = cif_readString(parser->buf, o, id->uid, TT_UID_LENGTH);
-    id->start = cif_readDate_yymmdd(parser->buf, o, &tm);
-    //    id->end = cif_readDate_yymmdd(parser->buf, 3 + TT_UID_LENGTH+4, &tm);
+    o = cif_readDate_yymmdd_r(parser->buf, o, &tm, &id->start);
     id->stpInd = parser->buf[79];
     return EXIT_SUCCESS;
 }

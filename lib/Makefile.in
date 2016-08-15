@@ -41,6 +41,14 @@ OBJS += cif/util/readDateTime.o \
 	cif/util/readString.o \
 	cif/util/readTime.o
 
+# Reference data defined within the CIF specs
+OBJS += data/bankHoliday.o \
+	data/daysRun.o \
+	data/portionId.o \
+	data/powerType.o \
+	data/status.o \
+	data/trainCategory.o
+
 # Seaarch Rest interfaces
 
 OBJS += search/index.o

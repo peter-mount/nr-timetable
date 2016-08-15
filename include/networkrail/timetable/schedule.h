@@ -81,17 +81,26 @@ extern "C" {
         short origin;
         // destination tiploc
         short dest;
-        char daysRun;
-        char bankHolRun;
-        char status[2];
-        char category[3];
+
         char headcode[5];
-        char serviceCode[2];
-        char portionId[2];
-        /*
-        char powerType[4];
+        char trainId[5];
+
+        int serviceCode;
+
+        unsigned int daysRun : 7;
+        unsigned int : 1;
+        
+        unsigned int category : 6;
+        unsigned int bankHolRun : 2;
+        unsigned int status : 4;
+        unsigned int portionId : 4;
+
+        unsigned int powerType : 4;
+        unsigned int  : 4;
+        
         char timingLoad[5];
         int speed;
+        /*
         char characteristics[7];
          */
         // BX code here?
@@ -104,20 +113,20 @@ extern "C" {
     extern int tt_parse_scheduleId(struct CIFParser *parser, struct ScheduleId *id);
     extern int tt_schedule_write(Hashmap *m, char *filename);
     extern int tt_schedule_load(Hashmap *m, char *filename);
-    
+
     extern void tt_append_schedule(struct charbuffer *b, struct Schedule *e);
     extern void tt_append_schedule_node(struct charbuffer *b, struct Node *n);
-    
+
     extern void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e);
-    
+
     extern void append_hhmm(struct charbuffer *b, char *n, int tm);
     extern void append_hhmmss(struct charbuffer *b, char *n, int tm);
-    
+
     extern void mapTiploc_mapSchedule(Hashmap *m, struct Schedule *s);
     extern void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e);
-    
+
     extern void tt_get_schedules_by_uid(struct charbuffer *b, const char *tiploc);
-    
+
 #ifdef __cplusplus
 }
 #endif

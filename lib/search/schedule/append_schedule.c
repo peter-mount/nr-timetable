@@ -5,6 +5,7 @@
 #include <area51/json.h>
 #include <area51/rest.h>
 #include <networkrail/timetable.h>
+#include <networkrail/timetable/lookupTable.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -68,36 +69,60 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
         charbuffer_append(b, ",\"end\":");
         json_append_date_ISO(b, &e->end);
 
-        tt_append_tiploc_field(b,"origin",e->origin);
-        tt_append_tiploc_field(b,"dest",e->dest);
-        
+        charbuffer_add(b, ',');
+        tt_append_tiploc_field(b, "origin", e->origin);
+
+        charbuffer_add(b, ',');
+        tt_append_tiploc_field(b, "dest", e->dest);
+
         // daysRun
-        charbuffer_append(b, ",\"daysRunV\":[]");
+        charbuffer_append(b, ",\"daysRun\":");
+        ttref_print_daysRun(b, e->daysRun);
 
-        charbuffer_append(b, ",\"daysRun\":\"");
-        if (e->daysRun)
-            charbuffer_add(b, e->daysRun);
-        charbuffer_add(b, '"');
+        if (e->bankHolRun) {
+            charbuffer_append(b, ",\"bankHolRun\":\"");
+            charbuffer_add(b, ttref_print_bankHoliday(e->status));
+            charbuffer_add(b, '"');
+        }
 
-        charbuffer_append(b, ",\"bankHolRun\":\"");
-        if (e->bankHolRun)
-            charbuffer_add(b, e->bankHolRun);
-        charbuffer_add(b, '"');
+        if (e->status) {
+            charbuffer_append(b, ",\"status\":\"");
+            charbuffer_add(b, ttref_print_status(e->status));
+            charbuffer_add(b, '"');
+        }
 
-        charbuffer_append(b, ",\"status\":");
-        json_append_str(b, e->status);
-
-        charbuffer_append(b, ",\"category\":");
-        json_append_str(b, e->category);
+        if (e->category) {
+            charbuffer_append(b, ",\"category\":");
+            json_append_str(b, ttref_print_trainCategory(e->category));
+        }
 
         charbuffer_append(b, ",\"headcode\":");
         json_append_str(b, e->headcode);
 
-        charbuffer_append(b, ",\"serviceCode\":");
-        json_append_str(b, e->serviceCode);
+        charbuffer_append(b, ",\"trainId\":");
+        json_append_str(b, e->trainId);
 
-        charbuffer_append(b, ",\"portionId\":");
-        json_append_str(b, e->portionId);
+        charbuffer_append(b, ",\"serviceCode\":");
+        json_append_int(b, e->serviceCode);
+
+        if (e->timingLoad[0]) {
+            charbuffer_append(b, ",\"timingLoad\":");
+            json_append_str(b, e->timingLoad);
+        }
+
+        charbuffer_append(b, ",\"speed\":");
+        json_append_int(b, e->speed);
+
+        if (e->powerType) {
+            charbuffer_append(b, ",\"powerType\":");
+            json_append_str(b, ttref_print_powerType(e->powerType));
+        }
+
+        if (e->portionId) {
+            charbuffer_append(b, ",\"portionId\":\"");
+            charbuffer_add(b, ttref_print_portionId(e->portionId));
+            charbuffer_add(b, '"');
+        }
 
         // Schedule entries
         charbuffer_append(b, ",\"entries\":");

@@ -100,6 +100,8 @@ extern "C" {
 
     extern void tt_index();
 
+    extern const char *ttref_portionId(char v);
+    
 #ifdef __cplusplus
 }
 #endif

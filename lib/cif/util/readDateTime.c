@@ -25,18 +25,39 @@ time_t cif_readDate(char *src, int offset, struct tm *tm, const char *fmt, int l
     return mktime(tm);
 }
 
+int cif_readDate_r(char *src, int offset, struct tm *tm, time_t *t, const char *fmt, int len) {
+    *t = cif_readDate(src, offset, tm, fmt, len);
+    return offset + len;
+}
+
 time_t cif_readDate_ddmmyyhhmm(char *src, int offset, struct tm *tm) {
     return cif_readDate(src, offset, tm, FMT_DMYHM, FMT_DMYHM_LEN);
+}
+
+int cif_readDate_ddmmyyhhmm_r(char *src, int offset, struct tm *tm, time_t *t) {
+    return cif_readDate_r(src, offset, tm, t, FMT_DMYHM, FMT_DMYHM_LEN);
 }
 
 time_t cif_readDate_ddmmyy(char *src, int offset, struct tm *tm) {
     return cif_readDate(src, offset, tm, FMT_DMY, FMT_DMY_LEN);
 }
 
+int cif_readDate_ddmmyy_r(char *src, int offset, struct tm *tm, time_t *t) {
+    return cif_readDate_r(src, offset, tm, t, FMT_DMY, FMT_DMY_LEN);
+}
+
 time_t cif_readDate_yymmdd(char *src, int offset, struct tm *tm) {
     return cif_readDate(src, offset, tm, FMT_YMD, FMT_YMD_LEN);
 }
 
+int cif_readDate_yymmdd_r(char *src, int offset, struct tm *tm, time_t *t) {
+    return cif_readDate_r(src, offset, tm, t, FMT_YMD, FMT_YMD_LEN);
+}
+
 time_t cif_readTime_hhmm(char *src, int offset, struct tm *tm) {
     return cif_readDate(src, offset, tm, FMT_HM, FMT_HM_LEN);
+}
+
+int cif_readTime_hhmm_r(char *src, int offset, struct tm *tm, time_t *t) {
+    return cif_readDate_r(src, offset, tm, t, FMT_HM, FMT_HM_LEN);
 }

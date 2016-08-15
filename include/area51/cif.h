@@ -39,11 +39,19 @@ extern "C" {
     extern int cif_readInt_r(char *src, int offset, int *dst, int len);
 
     extern time_t cif_readDate(char *src, int offset, struct tm *tm, const char *fmt, int len);
+    extern int cif_readDate_r(char *src, int offset, struct tm *tm, time_t *t, const char *fmt, int len);
+    
     extern time_t cif_readDate_ddmmyy(char *src, int offset, struct tm *tm);
+    extern int cif_readDate_ddmmyy_r(char *src, int offset, struct tm *tm, time_t *t);
+    
     extern time_t cif_readDate_yymmdd(char *src, int offset, struct tm *tm);
+    extern int cif_readDate_yymmdd_r(char *src, int offset, struct tm *tm, time_t *t);
+    
     extern time_t cif_readDate_ddmmyyhhmm(char *src, int offset, struct tm *tm);
+    extern int cif_readDate_ddmmyyhhmm_r(char *src, int offset, struct tm *tm, time_t *t);
 
     extern time_t cif_readtime_hhmm(char *src, int offset, struct tm *tm);
+    extern int cif_readtime_hhmm_r(char *src, int offset, struct tm *tm, time_t *t);
     
     extern int cif_readSeconds_hhmm(char *src, int offset);
     extern int cif_readSeconds_hhmm_r(char *src, int offset, int *dst);
