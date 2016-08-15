@@ -14,12 +14,12 @@ int tt_parse_loc_intermediate(struct CIFParser *parser) {
     struct Schedule *s = t->curschedule;
     if (!s)
         return EXIT_FAILURE;
-    
+
     struct ScheduleEntry *e = tt_parse_nextScheduleEntry(t);
     memset(e, 0, sizeof (struct ScheduleEntry));
 
     // Origin
-    e->type = 'I';
+    e->type = 1;
 
     int offset = 2;
 
@@ -29,39 +29,45 @@ int tt_parse_loc_intermediate(struct CIFParser *parser) {
     e->tiploc = tpl->id;
 
     // Tiploc suffix for circular routes
-    e->tiplocseq = parser->buf[offset++];
+    int tm;
+    offset = cif_readInt_r(parser->buf,offset,&tm,1);
+    e->tiplocseq = tm;
 
-    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &e->wta);
-    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &e->wtd);
-    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &e->wtp);
+    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &tm);
+    e->wta = tm;
+    
+    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &tm);
+    e->wtd = tm;
+    
+    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &tm);
+    e->wtp = tm;
 
-    offset = cif_readSeconds_hhmm_r(parser->buf, offset, &e->pta);
-    offset = cif_readSeconds_hhmm_r(parser->buf, offset, &e->ptd);
+    offset = cif_readSeconds_hhmm_r(parser->buf, offset, &tm);
+    e->pta = tm;
+    
+    offset = cif_readSeconds_hhmm_r(parser->buf, offset, &tm);
+    e->ptd = tm;
 
     e->platform = tt_idmap_add_r(parser->buf, offset, 3);
     offset += 3;
-    
+
     e->line = tt_idmap_add_r(parser->buf, offset, 3);
     offset += 3;
 
     e->path = tt_idmap_add_r(parser->buf, offset, 3);
     offset += 3;
 
-    e->activity=ttref_parse_activity(&parser->buf[offset]);
-    offset+=12;
+    e->activity = ttref_parse_activity(&parser->buf[offset]);
+    offset += 12;
 
     e->engAllow = tt_idmap_add_r(parser->buf, offset, 2);
     offset += 2;
-    
+
     e->pathAllow = tt_idmap_add_r(parser->buf, offset, 2);
     offset += 2;
-    
+
     e->perfAllow = tt_idmap_add_r(parser->buf, offset, 2);
     offset += 2;
-    
-    offset = cif_readString(parser->buf, offset, e->resThameslink, 5);
-    if(e->resThameslink[0])
-        logconsole("TL \"%s\"",e->resThameslink);
 
     return EXIT_SUCCESS;
 }

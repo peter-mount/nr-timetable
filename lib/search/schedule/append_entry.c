@@ -12,12 +12,16 @@
 #include <area51/list.h>
 #include <area51/log.h>
 
+static char type[] = {
+    'O', 'I', 'T'
+};
+
 void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
     if (e) {
         charbuffer_append(b, "{\"type\":\"");
         // TODO e->type=='R" then use C not L here
         charbuffer_add(b, 'L');
-        charbuffer_add(b, e->type);
+        charbuffer_add(b, type[e->type]);
         charbuffer_add(b, '\"');
 
         charbuffer_add(b, ',');
@@ -69,11 +73,6 @@ void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
         if (e->perfAllow) {
             charbuffer_append(b, ",\"perfAllow\":");
             json_append_str(b, tt_idmap_get(e->perfAllow));
-        }
-
-        if (e->resThameslink[0]) {
-            charbuffer_append(b, ",\"resThameslink\":");
-            json_append_str(b, e->resThameslink);
         }
 
         charbuffer_add(b, '}');

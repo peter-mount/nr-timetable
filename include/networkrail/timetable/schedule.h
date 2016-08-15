@@ -48,18 +48,18 @@ extern "C" {
     struct ScheduleEntry {
         //struct Node node;
         // "O", "I", "T" for Origin etc, i.e. LO, LI, LT
-        char type;
-        short tiploc;
+        unsigned int type : 2;
+        unsigned int tiploc : 14;
         // Tiploc sequence (for circular routes)
-        char tiplocseq;
-        //char tiploc[9];
+        unsigned int tiplocseq : 4;
+
         // Public timetable in seconds of day
-        int pta;
-        int ptd;
+        unsigned int pta : 17;
+        unsigned int ptd : 17;
         // Working timetable in seconds of day
-        int wta;
-        int wtd;
-        int wtp;
+        unsigned int wta : 17;
+        unsigned int wtd : 17;
+        unsigned int wtp : 17;
         //
         unsigned long activity : 36;
         unsigned int platform : 14;
@@ -69,10 +69,6 @@ extern "C" {
         unsigned long engAllow : 14;
         unsigned long pathAllow : 14;
         unsigned long perfAllow : 14;
-        unsigned long : 8;
-
-        // reserved for Thameslink: LO and LT 3 chars, LI 5 chars
-        char resThameslink[6];
     };
 
     struct Schedule {

@@ -19,7 +19,7 @@ int tt_parse_loc_terminating(struct CIFParser *parser) {
     memset(e, 0, sizeof (struct ScheduleEntry));
 
     // Origin
-    e->type = 'T';
+    e->type = 2;
 
     int offset = 2;
 
@@ -29,24 +29,24 @@ int tt_parse_loc_terminating(struct CIFParser *parser) {
     s->dest = e->tiploc = tpl->id;
 
     // Tiploc suffix for circular routes
-    e->tiplocseq = parser->buf[offset++];
+    int tm;
+    offset = cif_readInt_r(parser->buf,offset,&tm,1);
+    e->tiplocseq = tm;
 
-    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &e->wta);
+    offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &tm);
+    e->wta = tm;
 
-    offset = cif_readSeconds_hhmm_r(parser->buf, offset, &e->pta);
+    offset = cif_readSeconds_hhmm_r(parser->buf, offset, &tm);
+    e->pta = tm;
 
     e->platform = tt_idmap_add_r(parser->buf, offset, 3);
     offset += 3;
-    
+
     e->path = tt_idmap_add_r(parser->buf, offset, 3);
     offset += 3;
 
-    e->activity=ttref_parse_activity(&parser->buf[offset]);
-    offset+=12;
-
-    offset = cif_readString(parser->buf, offset, e->resThameslink, 3);
-    if(e->resThameslink[0])
-        logconsole("TL \"%s\"",e->resThameslink);
+    e->activity = ttref_parse_activity(&parser->buf[offset]);
+    offset += 12;
 
     return EXIT_SUCCESS;
 }
