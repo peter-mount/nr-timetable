@@ -21,8 +21,11 @@ void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
         charbuffer_add(b, e->type);
 
         charbuffer_append(b, "\",\"tiploc\":");
-        json_append_int(b, (int) e->tiploc);
-        //json_append_str(b, e->tiploc);
+        struct TTTiploc *tpl = (struct TTTiploc *) hashmapGet(timetable->idTiploc, &e->tiploc);
+        if (tpl)
+            json_append_str(b, tpl->tiploc);
+        else
+            json_append_int(b, (int) e->tiploc);
 
         if (e->tiplocseq && e->tiplocseq != ' ') {
             charbuffer_append(b, ",\"tiplocSeq\":\"");

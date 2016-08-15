@@ -25,6 +25,8 @@ static void add(Hashmap *m, void *k, void *e) {
 static bool indexTiploc(void *k, void *v, void *c) {
     struct TTTiploc *t = (struct TTTiploc *) v;
 
+    hashmapPut(timetable->idTiploc, &t->id, t);
+
     // Should be 1-1 linkage here
     if (t->crs[0]) {
         struct TTTiploc *e = (struct TTTiploc *) hashmapGet(timetable->crsTiploc, t->crs);
@@ -41,19 +43,19 @@ static bool indexTiploc(void *k, void *v, void *c) {
 }
 
 static bool indexSchedule(void *k, void *v, void *c) {
-    struct Schedule *s = (struct Schedule *)v;
-    
+    struct Schedule *s = (struct Schedule *) v;
+
     // schedule uuid
-    add(timetable->uid,s->id.uid,s);
-    
+    add(timetable->uid, s->id.uid, s);
+
     return true;
 }
 
 void tt_index() {
     logconsole("Indexing tiplocs");
     hashmapForEach(timetable->loc, indexTiploc, NULL);
-    
+
     logconsole("Indexing schedules");
     hashmapForEach(timetable->schedules, indexSchedule, NULL);
-    logconsole("Schedules %d uids %d", hashmapSize(timetable->schedules),hashmapSize(timetable->uid));
+    logconsole("Schedules %d uids %d", hashmapSize(timetable->schedules), hashmapSize(timetable->uid));
 }

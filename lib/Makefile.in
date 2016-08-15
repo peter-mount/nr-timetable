@@ -36,16 +36,6 @@ OBJS += cif/timetable/tiploc/read.o \
 OBJS += cif/uid/hash.o \
 	cif/uid/parse.o
 
-#OBJS += cif/linkedmap/forEach.o \
-#	cif/linkedmap/get.o \
-#	cif/linkedmap/getStats.o \
-#	cif/linkedmap/log.o \
-#	cif/linkedmap/new.o \
-#	cif/linkedmap/put.o \
-#	cif/linkedmap/remove.o \
-#	cif/linkedmap/removeIf.o \
-#	cif/linkedmap/write.o
-
 OBJS += cif/util/readDateTime.o \
 	cif/util/readInt.o \
 	cif/util/readString.o \
@@ -66,5 +56,14 @@ OBJS += search/tiploc/append_tiploc.o \
 	search/tiploc/find_crs.o \
 	search/tiploc/find_stanox.o \
 	search/tiploc/find_tiploc.o
+
+# tiploc index map in results
+OBJS += search/tiploc/map/add.o \
+	search/tiploc/map/append.o \
+	search/tiploc/map/new.o \
+	search/tiploc/map/schedule.o
+
+# To be moved to libarea51
+OBJS += short.o
 
 include ../SubMakefile

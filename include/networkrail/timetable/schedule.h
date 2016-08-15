@@ -110,6 +110,9 @@ extern "C" {
     extern void append_hhmm(struct charbuffer *b, char *n, int tm);
     extern void append_hhmmss(struct charbuffer *b, char *n, int tm);
     
+    extern void mapTiploc_mapSchedule(Hashmap *m, struct Schedule *s);
+    extern void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e);
+    
     extern void tt_get_schedules_by_uid(struct charbuffer *b, const char *tiploc);
     
 #ifdef __cplusplus

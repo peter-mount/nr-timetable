@@ -66,6 +66,8 @@ extern "C" {
         // Only used by timetabled
         // =======================
         
+        Hashmap *idTiploc;
+        
         // CRS->tiploc index
         Hashmap *crsTiploc;
         
@@ -90,6 +92,10 @@ extern "C" {
     extern void tt_parse_complete_schedule(struct TimeTable *t);
     extern struct ScheduleEntry *tt_parse_nextScheduleEntry(struct TimeTable *t);
 
+    extern Hashmap *mapTiploc_new();
+    extern void mapTiploc_addTiploc(Hashmap *m, short tiploc);
+    extern void mapTiploc_appendIndex(struct charbuffer *b, Hashmap *m);
+    
     extern struct TTTiploc *tt_getTiploc(struct TimeTable *t, char *tiploc);
 
     extern void tt_index();
