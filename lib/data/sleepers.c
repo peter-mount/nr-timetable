@@ -12,12 +12,12 @@ struct table {
 #define SIZE 3
 
 static const struct table data[] = {
-    {'X', "Does not run on specified Bank Holiday Mondays"},
-    {'E', "Does not run on specified Endinburgh Holiday dates (no longer used)"},
-    {'G', "Does not run on specified Glasgow Holiday dates"}
+    {'F', "First class only"},
+    {'S', "Standard class only"},
+    {'B', "First & Standard class"},
 };
 
-int ttref_parse_bankHoliday(char v) {
+int ttref_parse_sleepers(char v) {
     if (v != ' ')
         for (int i = 0; i < SIZE; i++)
             if (data[i].v == v)
@@ -25,6 +25,6 @@ int ttref_parse_bankHoliday(char v) {
     return 0;
 }
 
-char *ttref_print_bankHoliday(int id) {
+char *ttref_print_sleepers(int id) {
     return id < 1 || id > SIZE ? NULL : data[id - 1].label;
 }

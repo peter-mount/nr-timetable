@@ -60,7 +60,7 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
         charbuffer_append(b, ",\"start\":");
         json_append_date_ISO(b, &e->id.start);
 
-        charbuffer_append(b, ",\"stdInd\":\"");
+        charbuffer_append(b, ",\"stpInd\":\"");
         charbuffer_add(b, e->id.stpInd);
         charbuffer_add(b, '"');
 
@@ -69,11 +69,15 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
         charbuffer_append(b, ",\"end\":");
         json_append_date_ISO(b, &e->end);
 
-        charbuffer_add(b, ',');
-        tt_append_tiploc_field(b, "origin", e->origin);
+        if (e->origin) {
+            charbuffer_add(b, ',');
+            tt_append_tiploc_field(b, "origin", e->origin);
+        }
 
-        charbuffer_add(b, ',');
-        tt_append_tiploc_field(b, "dest", e->dest);
+        if (e->dest) {
+            charbuffer_add(b, ',');
+            tt_append_tiploc_field(b, "dest", e->dest);
+        }
 
         // daysRun
         charbuffer_append(b, ",\"daysRun\":");
@@ -81,14 +85,13 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
 
         if (e->bankHolRun) {
             charbuffer_append(b, ",\"bankHolRun\":\"");
-            charbuffer_add(b, ttref_print_bankHoliday(e->status));
+            json_append_str(b, ttref_print_bankHoliday(e->bankHolRun));
             charbuffer_add(b, '"');
         }
 
         if (e->status) {
-            charbuffer_append(b, ",\"status\":\"");
-            charbuffer_add(b, ttref_print_status(e->status));
-            charbuffer_add(b, '"');
+            charbuffer_append(b, ",\"status\":");
+            ttref_print_status(b, e->status);
         }
 
         if (e->category) {
@@ -96,22 +99,30 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
             json_append_str(b, ttref_print_trainCategory(e->category));
         }
 
-        charbuffer_append(b, ",\"headcode\":");
-        json_append_str(b, e->headcode);
+        if (e->headcode[0]) {
+            charbuffer_append(b, ",\"headcode\":");
+            json_append_str(b, e->headcode);
+        }
 
-        charbuffer_append(b, ",\"trainId\":");
-        json_append_str(b, e->trainId);
+        if (e->trainId[0]) {
+            charbuffer_append(b, ",\"trainId\":");
+            json_append_str(b, e->trainId);
+        }
 
-        charbuffer_append(b, ",\"serviceCode\":");
-        json_append_int(b, e->serviceCode);
+        if (e->serviceCode) {
+            charbuffer_append(b, ",\"serviceCode\":");
+            json_append_int(b, e->serviceCode);
+        }
 
         if (e->timingLoad[0]) {
             charbuffer_append(b, ",\"timingLoad\":");
             json_append_str(b, e->timingLoad);
         }
 
-        charbuffer_append(b, ",\"speed\":");
-        json_append_int(b, e->speed);
+        if (e->speed) {
+            charbuffer_append(b, ",\"speed\":");
+            json_append_int(b, e->speed);
+        }
 
         if (e->powerType) {
             charbuffer_append(b, ",\"powerType\":");
@@ -124,15 +135,23 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
             charbuffer_add(b, '"');
         }
 
-        // Schedule entries
-        charbuffer_append(b, ",\"entries\":");
-        charbuffer_add(b, '[');
-        for (int i = 0; i < e->numEntries; i++) {
-            if (i > 0)
-                charbuffer_add(b, ',');
-            tt_append_scheduleEntry(b, &e->entries[i]);
+        if (e->operatingCharacteristics) {
+            charbuffer_append(b, ",\"operatingCharacteristics\":");
+            ttref_print_opchar(b, e->operatingCharacteristics);
         }
-        charbuffer_add(b, ']');
+
+        // Schedule entries
+        if (e->numEntries) {
+            charbuffer_append(b, ",\"entries\":");
+            charbuffer_add(b, '[');
+            for (int i = 0; i < e->numEntries; i++) {
+                if (i > 0)
+                    charbuffer_add(b, ',');
+                tt_append_scheduleEntry(b, &e->entries[i]);
+            }
+            charbuffer_add(b, ']');
+        } else
+            charbuffer_append(b, ",\"entries\":[]");
 
         charbuffer_add(b, '}');
     } else {

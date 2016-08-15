@@ -87,5 +87,5 @@ int ttref_parse_trainCategory(char a, char b) {
 }
 
 char *ttref_print_trainCategory(int id) {
-    return id < 1 || id > SIZE ? NULL : data[id - 1].k;
+    return id < 1 || id > SIZE ? NULL : data[id - 1].label;
 }

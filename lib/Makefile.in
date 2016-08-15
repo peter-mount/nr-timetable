@@ -43,9 +43,13 @@ OBJS += cif/util/readDateTime.o \
 
 # Reference data defined within the CIF specs
 OBJS += data/bankHoliday.o \
+	data/catering.o \
 	data/daysRun.o \
+	data/operatingCharacteristics.o \
 	data/portionId.o \
 	data/powerType.o \
+	data/reservations.o \
+	data/sleepers.o \
 	data/status.o \
 	data/trainCategory.o
 

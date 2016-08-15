@@ -7,17 +7,19 @@
 struct table {
     char v;
     char *label;
+    char *symbol;
 };
 
-#define SIZE 3
+#define SIZE 4
 
 static const struct table data[] = {
-    {'X', "Does not run on specified Bank Holiday Mondays"},
-    {'E', "Does not run on specified Endinburgh Holiday dates (no longer used)"},
-    {'G', "Does not run on specified Glasgow Holiday dates"}
+    {'A', "Seat Reservations Compulsory", "R_white_box"},
+    {'E', "Reservations for Bicycles Essential", "triangle_inverted_black"},
+    {'R', "Seat Reservations Recommended", "R_black_box"},
+    {'S', "Seat Reservations possible from any station", "diamond_white"}
 };
 
-int ttref_parse_bankHoliday(char v) {
+int ttref_parse_reservations(char v) {
     if (v != ' ')
         for (int i = 0; i < SIZE; i++)
             if (data[i].v == v)
@@ -25,6 +27,6 @@ int ttref_parse_bankHoliday(char v) {
     return 0;
 }
 
-char *ttref_print_bankHoliday(int id) {
+char *ttref_print_reservations(int id) {
     return id < 1 || id > SIZE ? NULL : data[id - 1].label;
 }

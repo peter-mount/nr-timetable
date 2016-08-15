@@ -88,22 +88,28 @@ extern "C" {
         int serviceCode;
 
         unsigned int daysRun : 7;
-        unsigned int : 1;
-        
+        // first & standard class if set, standard class only if false
+        unsigned int firstClass : 1;
+
         unsigned int category : 6;
-        unsigned int bankHolRun : 2;
         unsigned int status : 4;
+        unsigned int bankHolRun : 2;
         unsigned int portionId : 4;
 
         unsigned int powerType : 4;
-        unsigned int  : 4;
-        
+        unsigned int sleepers : 2;
+        unsigned int : 2;
+
+        unsigned int reservations : 3;
+        unsigned int catering : 12;
+        unsigned int : 1;
+
+        unsigned int operatingCharacteristics : 24;
+        unsigned int : 8;
+
         char timingLoad[5];
         int speed;
-        /*
-        char characteristics[7];
-         */
-        // BX code here?
+        
         int numEntries;
         struct ScheduleEntry *entries;
     };

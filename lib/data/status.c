@@ -1,17 +1,16 @@
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <networkrail/timetable/lookupTable.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <area51/charbuffer.h>
+#include <networkrail/timetable/lookupTable.h>
 
 struct table {
     char c;
     char *t;
     unsigned int permanent : 1;
     unsigned int wtt : 1;
-    unsigned int defined : 1;
-    unsigned int : 5;
+    unsigned int : 6;
 };
 
 #define bus "Bus"
@@ -22,21 +21,38 @@ struct table {
 
 #define SIZE 10
 
-static const struct table data[] = {
-    {'B', bus, true, false, true},
-    {'F', freight, true, true, true},
-    {'P', pax, true, true, true},
-    {'S', ship, true, false, true},
-    {'T', trip, true, false, true},
-    {'1', pax, true, true, true},
-    {'2', freight, true, true, true},
-    {'3', trip, true, false, true},
-    {'4', ship, true, false, true},
-    {'5', bus, true, false, true}
+static struct table data[] = {
+    {'B', bus, true, false},
+    {'F', freight, true, true},
+    {'P', pax, true, true},
+    {'S', ship, true, false},
+    {'T', trip, true, false},
+    {'1', pax, false, false},
+    {'2', freight, false, false},
+    {'3', trip, false, false},
+    {'4', ship, false, false},
+    {'5', bus, false, false}
 };
 
-char ttref_print_status(int id) {
-    return id < 1 || id > SIZE ? ' ' : data[id - 1].c;
+void ttref_print_status(struct charbuffer *b, int id) {
+    if (id < 1 || id > SIZE) {
+        charbuffer_append(b, "null");
+        return;
+    }
+
+    struct table *t = &data[id - 1];
+    
+    charbuffer_add(b,'"');
+
+    if (!t->permanent)
+        charbuffer_append(b, "STP ");
+    
+    charbuffer_append(b, t->t);
+
+    if (t->permanent)
+        charbuffer_append(b, t->wtt ? " (Permanent - WTT)" : " (Permanent)");
+    
+    charbuffer_add(b,'"');
 }
 
 int ttref_parse_status(char v) {

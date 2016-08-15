@@ -73,23 +73,42 @@ static int insert(struct TimeTable *p, struct ScheduleId *sid) {
     o++;
 
     if (b[o] != ' ' && b[o + 1] != ' ' && b[o + 2] != ' ') {
-            s->powerType = ttref_parse_powerType(b[o], b[o + 1], b[o + 2]);
-            if (!s->powerType)
-                logconsole("Unsupported powerType '%c%c%c'", b[o], b[o + 1], b[o + 2]);
-        }
+        s->powerType = ttref_parse_powerType(b[o], b[o + 1], b[o + 2]);
+        if (!s->powerType)
+            logconsole("Unsupported powerType '%c%c%c'", b[o], b[o + 1], b[o + 2]);
+    }
     o += 3;
 
     o = cif_readString(b, o, s->timingLoad, 4);
     o = cif_readInt_r(b, o, &s->speed, 3);
 
-    o += 6; // operating characteristics
+    // operating characteristics
+    ttref_parse_opchar(&b[o]);
+    o += 6;
 
-    o++; // seating class
-    o++; // sleepers
-    o++; // reservations
+    // Seating class, "S" for standard only, ' ' or 'B' for 1st & standard
+    s->firstClass = b[o++] != 'S';
+
+    if (b[o] != ' ') {
+        s->sleepers = ttref_parse_sleepers(b[o]);
+        if (!s->sleepers)
+            logconsole("Unsupported sleepers '%c'", b[o]);
+    }
+    o++;
+
+    if (b[o] != ' ') {
+        s->reservations = ttref_parse_reservations(b[o]);
+        if (!s->reservations)
+            logconsole("Unsupported reservations '%c'", b[o]);
+    }
+    o++;
+
     o++; // not used - connection indicator
-    o += 4; // catering code
-    o += 4; // service branding
+
+    s->catering = ttref_parse_catering(&b[o]);
+    o += 4;
+
+    o += 4; // service branding - we don't use this
 
     // Add to collection and make it current
     void *old = hashmapPut(p->schedules, &s->id, s);
