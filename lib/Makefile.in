@@ -76,7 +76,4 @@ OBJS += search/tiploc/map/add.o \
 	search/tiploc/map/new.o \
 	search/tiploc/map/schedule.o
 
-# To be moved to libarea51
-OBJS += short.o
-
 include ../SubMakefile

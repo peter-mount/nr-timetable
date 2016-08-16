@@ -15,9 +15,6 @@ extern struct TimeTable *timetable;
 
 // https://uktra.in/timetable/schedule/W46666/2016-09-12
 
-extern int hashmapShortHash(void* key);
-extern bool hashmapShortEquals(void* keyA, void* keyB);
-
 Hashmap *mapTiploc_new() {
     return hashmapCreate(100, hashmapShortHash, hashmapShortEquals);
 }

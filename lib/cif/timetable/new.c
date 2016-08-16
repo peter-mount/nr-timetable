@@ -5,9 +5,6 @@
 #include <networkrail/timetable.h>
 #include <networkrail/timetable/schedule.h>
 
-extern int hashmapShortHash(void* key);
-extern bool hashmapShortEquals(void* keyA, void* keyB);
-
 struct TimeTable *timetable_new() {
     struct TimeTable *tt = (struct TimeTable *) malloc(sizeof (struct TimeTable));
     memset(tt, 0, sizeof (struct TimeTable));
