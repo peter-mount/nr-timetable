@@ -16,6 +16,7 @@
 
 #include <area51/charbuffer.h>
 #include <area51/hashmap.h>
+#include <networkrail/timetable.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,6 +25,7 @@ extern "C" {
     extern long ttref_parse_activity(char *v);
     extern void ttref_print_activity(struct charbuffer *b, long dr);
     extern void ttref_add_activity(Hashmap *m, long dr);
+    extern void ttref_add_schedule_activity(Hashmap *map, struct Schedule *s);
     extern void ttref_print_activity_index(struct charbuffer *b, Hashmap *m);
 
     extern int ttref_parse_bankHoliday(char v);

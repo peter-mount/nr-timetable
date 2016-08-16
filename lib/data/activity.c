@@ -108,6 +108,26 @@ void ttref_add_activity(Hashmap *map, long dr) {
     }
 }
 
-void ttref_print_activity_index(struct charbuffer *b, Hashmap *m) {
+void ttref_add_schedule_activity(Hashmap *map, struct Schedule *s) {
+    for (int i = 0; i < s->numEntries; i++)
+        ttref_add_activity(map, s->entries[i].activity);
+}
 
+struct ctx {
+    struct charbuffer *b;
+    bool sep;
+};
+
+static bool append(void *k, void *v, void *c) {
+    struct ctx *ctx = (struct ctx *) c;
+    charbuffer_printf(ctx->b, ctx->sep ? ",\"%s\":\"%s\"" : "\"%s\":\"%s\"", k, v);
+    ctx->sep = true;
+    return true;
+}
+
+void ttref_print_activity_index(struct charbuffer *b, Hashmap *m) {
+    struct ctx ctx;
+    ctx.b = b;
+    ctx.sep = false;
+    hashmapForEach(m, append, &ctx);
 }
