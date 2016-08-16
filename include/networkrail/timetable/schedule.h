@@ -42,6 +42,9 @@ extern "C" {
         char dateInd;
     };
 
+    // Bits required to store time of day
+#define TIME_KEY_SIZE 17
+
     // CIF User Spec v29 FINAL Page 20,21,23
     // TODO P22 change en-route
 
@@ -49,41 +52,38 @@ extern "C" {
         //struct Node node;
         // "O", "I", "T" for Origin etc, i.e. LO, LI, LT
         unsigned int type : 2;
+        // Tiploc (currently 10k) room for 500 entries before increasing this
         unsigned int tiploc : 14;
-        // Tiploc sequence (for circular routes)
+        // Tiploc sequence (for circular routes), 0-9
         unsigned int tiplocseq : 4;
 
         // Public timetable in seconds of day
-        unsigned int pta : 17;
-        unsigned int ptd : 17;
+        unsigned int pta : TIME_KEY_SIZE;
+        unsigned int ptd : TIME_KEY_SIZE;
         // Working timetable in seconds of day
-        unsigned int wta : 17;
-        unsigned int wtd : 17;
-        unsigned int wtp : 17;
+        unsigned int wta : TIME_KEY_SIZE;
+        unsigned int wtd : TIME_KEY_SIZE;
+        unsigned int wtp : TIME_KEY_SIZE;
         //
         unsigned long activity : 36;
-        unsigned int platform : 14;
-        unsigned long line : 14;
+        unsigned int platform : IDKEY_SIZE;
+        unsigned long line : IDKEY_SIZE;
 
-        unsigned long path : 14;
-        unsigned long engAllow : 14;
-        unsigned long pathAllow : 14;
-        unsigned long perfAllow : 14;
+        unsigned long path : IDKEY_SIZE;
+        unsigned long engAllow : IDKEY_SIZE;
+        unsigned long pathAllow : IDKEY_SIZE;
+        unsigned long perfAllow : IDKEY_SIZE;
     };
 
     struct Schedule {
         //struct Node node;
         struct ScheduleId id;
         time_t end;
-        // Origin tiploc
-        short origin;
-        // destination tiploc
-        short dest;
 
-        char headcode[5];
-        char trainId[5];
+        // 0000-9999
+        unsigned int headcode : 14;
 
-        int serviceCode;
+        unsigned long trainId : IDKEY_SIZE;
 
         unsigned int daysRun : 7;
         // first & standard class if set, standard class only if false
@@ -96,19 +96,18 @@ extern "C" {
 
         unsigned int powerType : 4;
         unsigned int sleepers : 2;
-        unsigned int : 2;
 
         unsigned int reservations : 3;
         unsigned int catering : 12;
-        unsigned int : 1;
 
         unsigned int operatingCharacteristics : 24;
-        unsigned int : 8;
+        unsigned long timingLoad : IDKEY_SIZE;
 
-        char timingLoad[5];
-        int speed;
+        unsigned int serviceCode : 27;
+        unsigned int speed : 10;
 
-        int numEntries;
+        // Max numEntries seen is 150
+        unsigned int numEntries : 8;
         struct ScheduleEntry *entries;
     };
 

@@ -57,13 +57,18 @@ static int insert(struct TimeTable *p, struct ScheduleId *sid) {
     }
     o += 2;
 
-    o = cif_readString(b, o, s->trainId, 4);
-    o = cif_readString(b, o, s->headcode, 4);
+    s->trainId = tt_idmap_add_r(b, o, 4);
+    o += 4;
+
+    // headcode is 0000-9999 numeric
+    s->headcode = cif_readInt(b, o, 4);
+    o += 4;
 
     // Course indicator, not used
     o++;
 
-    o = cif_readInt_r(b, o, &s->serviceCode, 8);
+    s->serviceCode = cif_readInt(b, o, 8);
+    o += 8;
 
     if (b[o] != ' ') {
         s->portionId = ttref_parse_portionId(b[o]);
@@ -79,8 +84,12 @@ static int insert(struct TimeTable *p, struct ScheduleId *sid) {
     }
     o += 3;
 
-    o = cif_readString(b, o, s->timingLoad, 4);
-    o = cif_readInt_r(b, o, &s->speed, 3);
+    s->timingLoad = tt_idmap_add_r(b, o, 4);
+    o += 4;
+    //o = cif_readString(b, o, s->timingLoad, 4);
+
+    s->speed = cif_readInt(b, o, 3);
+    o += 3;
 
     // operating characteristics
     ttref_parse_opchar(&b[o]);

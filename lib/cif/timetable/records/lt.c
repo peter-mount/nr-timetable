@@ -26,7 +26,7 @@ int tt_parse_loc_terminating(struct CIFParser *parser) {
     char tiploc[10];
     offset = cif_readString(parser->buf, offset, tiploc, 7);
     struct TTTiploc *tpl = tt_getTiploc(t, tiploc);
-    s->dest = e->tiploc = tpl->id;
+    e->tiploc = tpl->id;
 
     // Tiploc suffix for circular routes
     int tm;

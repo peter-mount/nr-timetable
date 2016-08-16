@@ -69,16 +69,13 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
         charbuffer_append(b, ",\"end\":");
         json_append_date_ISO(b, &e->end);
 
-        if (e->origin) {
+        if (e->numEntries) {
             charbuffer_add(b, ',');
-            tt_append_tiploc_field(b, "origin", e->origin);
-        }
-
-        if (e->dest) {
+            tt_append_tiploc_field(b, "origin", e->entries[0].tiploc);
             charbuffer_add(b, ',');
-            tt_append_tiploc_field(b, "dest", e->dest);
+            tt_append_tiploc_field(b, "dest", e->entries[e->numEntries-1].tiploc);
         }
-
+        
         // daysRun
         charbuffer_append(b, ",\"daysRun\":");
         ttref_print_daysRun(b, e->daysRun);
@@ -99,14 +96,13 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
             json_append_str(b, ttref_print_trainCategory(e->category));
         }
 
-        if (e->headcode[0]) {
-            charbuffer_append(b, ",\"headcode\":");
-            json_append_str(b, e->headcode);
+        if (e->headcode) {
+            charbuffer_printf(b, ",\"headcode\":\"%04d\"", e->headcode);
         }
 
-        if (e->trainId[0]) {
+        if (e->trainId) {
             charbuffer_append(b, ",\"trainId\":");
-            json_append_str(b, e->trainId);
+            json_append_str(b, tt_idmap_get(e->trainId));
         }
 
         if (e->serviceCode) {
@@ -114,9 +110,10 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
             json_append_int(b, e->serviceCode);
         }
 
-        if (e->timingLoad[0]) {
+        if (e->timingLoad) {
             charbuffer_append(b, ",\"timingLoad\":");
-            json_append_str(b, e->timingLoad);
+            json_append_str(b, tt_idmap_get(e->trainId));
+            //json_append_str(b, e->timingLoad);
         }
 
         if (e->speed) {

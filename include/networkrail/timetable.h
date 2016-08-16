@@ -17,6 +17,12 @@
 #include <area51/hashmap.h>
 #include <area51/cif.h>
 
+/*
+ * Bits required to store idmap key, see below on definition & if/when to
+ * increase this size
+ */
+#define IDKEY_SIZE 14
+
 #include <networkrail/timetable/tiploc.h>
 #include <networkrail/timetable/schedule.h>
 
@@ -55,7 +61,7 @@ extern "C" {
 
         // The current schedule header
         struct TTHeader header;
-        
+
         // Tiplocs
         short locSeq;
         Hashmap *loc;
@@ -69,16 +75,16 @@ extern "C" {
         // =======================
         Hashmap *idmap;
         Hashmap *txtmap;
-        
+
         // =======================
         // Only used by timetabled
         // =======================
-        
+
         Hashmap *idTiploc;
-        
+
         // CRS->tiploc index
         Hashmap *crsTiploc;
-        
+
         // Stanox->tiploc index. Entries are Lists as it's 1->n relationship
         Hashmap *stanoxTiploc;
 
@@ -103,19 +109,57 @@ extern "C" {
     extern Hashmap *mapTiploc_new();
     extern void mapTiploc_addTiploc(Hashmap *m, short tiploc);
     extern void mapTiploc_appendIndex(struct charbuffer *b, Hashmap *m);
-    
+
     extern struct TTTiploc *tt_getTiploc(struct TimeTable *t, char *tiploc);
 
     extern void tt_index();
 
-    extern const char *ttref_portionId(char v);
-    
+    /*
+     * The idmap/txtmap constant string pool.
+     * 
+     * This pool contains common strings like trainId, platform numbers etc.
+     * It's size is limited by IDKEY_SIZE, which defines the number of bits
+     * in the various tables. If this grows beyond 2^IDKEY_SIZE then we must
+     * increase this size, forcing the table to grow as well.
+     * 
+     * In the varous structures define fields that link to this table as:-
+     * 
+     * unsigned int fieldname : IDKEY_SIZE;
+     * 
+     * Note: Key's are limited to 15 characters when stored on disk.
+     */
+
+    /**
+     * Lookup entry adding as necessary
+     * @param k entry to look
+     * @return id in the map
+     */
     extern int tt_idmap_add(char *k);
+    /**
+     * Lookup entry adding as necessary
+     * @param k entry to look
+     * @param o offset in k of start of key
+     * @param l length of key
+     * @return id in the map
+     */
     extern int tt_idmap_add_r(char *k, int o, int l);
+    /**
+     * Retrieve the constant value
+     * @param k id of constant
+     * @return constant or NULL
+     */
     extern char *tt_idmap_get(int k);
+    /**
+     * Read the constant table from a File
+     * @param f FILE
+     */
     extern void tt_idmap_read(FILE *f);
+    /**
+     * Write the constant table to a File
+     * @param f FILE
+     */
     extern void tt_idmap_write(FILE *f);
-    
+
 #ifdef __cplusplus
 }
 #endif

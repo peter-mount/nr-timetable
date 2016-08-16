@@ -1,4 +1,8 @@
-
+/*
+ * Manages the idmap/textmap Hashmaps in Timetable used to normalise common
+ * strings within the schedule like platform numbers and other values to keep
+ * the schedule table size down.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <area51/charbuffer.h>

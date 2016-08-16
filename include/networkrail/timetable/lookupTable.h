@@ -15,6 +15,7 @@
 #define LOOKUPTABLE_H
 
 #include <area51/charbuffer.h>
+#include <area51/hashmap.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,19 +23,21 @@ extern "C" {
 
     extern long ttref_parse_activity(char *v);
     extern void ttref_print_activity(struct charbuffer *b, long dr);
-    
+    extern void ttref_add_activity(Hashmap *m, long dr);
+    extern void ttref_print_activity_index(struct charbuffer *b, Hashmap *m);
+
     extern int ttref_parse_bankHoliday(char v);
     extern char *ttref_print_bankHoliday(int id);
 
     extern int ttref_parse_catering(char *v);
     extern void ttref_print_catering(struct charbuffer *b, int dr);
-    
+
     extern int ttref_parse_daysRun(char *s);
     extern void ttref_print_daysRun(struct charbuffer *b, int dr);
 
     extern int ttref_parse_opchar(char *v);
     extern void ttref_print_opchar(struct charbuffer *b, int dr);
-    
+
     extern int ttref_parse_portionId(char v);
     extern char ttref_print_portionId(int id);
 
@@ -48,7 +51,7 @@ extern "C" {
     extern char *ttref_print_sleepers(int id);
 
     extern int ttref_parse_status(char v);
-    extern void ttref_print_status(struct charbuffer *b,int id);
+    extern void ttref_print_status(struct charbuffer *b, int id);
 
     extern int ttref_parse_trainCategory(char a, char b);
     extern char *ttref_print_trainCategory(int id);

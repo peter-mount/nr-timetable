@@ -74,7 +74,8 @@ OBJS += search/tiploc/append_tiploc.o \
 
 # tiploc index map in results
 OBJS += search/tiploc/map/add.o \
-	search/tiploc/map/append.o \
+	search/tiploc/map/append_activityMap.o \
+	search/tiploc/map/append_tiplocMap.o \
 	search/tiploc/map/new.o \
 	search/tiploc/map/schedule.o
 
