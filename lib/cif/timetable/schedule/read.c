@@ -35,25 +35,11 @@ static bool read(Hashmap *m, FILE *f) {
     return false;
 }
 
-// Util to add an index entry where the entry is a linked list
-
-static void add(Hashmap *m, void *k, void *e) {
-    struct List *l = (struct List *) hashmapGet(m, k);
-    if (!l) {
-        l = (struct List *) malloc(sizeof (struct List));
-        list_init(l);
-        hashmapPut(m, k, l);
-    }
-
-    struct Node *n = node_alloc((char *) e);
-    list_addTail(l, n);
-}
-
 static bool indexSchedule(void *k, void *v, void *c) {
     struct Schedule *s = (struct Schedule *) v;
 
     // schedule uuid
-    add(timetable->uid, s->id.uid, s);
+    hashmapAddList(timetable->uid, s->id.uid, s);
 
     return true;
 }

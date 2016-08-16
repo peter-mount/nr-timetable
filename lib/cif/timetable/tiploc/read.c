@@ -17,22 +17,10 @@ static void *readTiploc(Hashmap *m, void *p) {
     return t + 1;
 }
 
-// Util to add an index entry where the entry is a linked list
-static void add(Hashmap *m, void *k, void *e) {
-    struct List *l = (struct List *) hashmapGet(m, k);
-    if (!l) {
-        l = (struct List *) malloc(sizeof (struct List));
-        list_init(l);
-        hashmapPut(m, k, l);
-    }
-
-    struct Node *n = node_alloc((char *) e);
-    list_addTail(l, n);
-}
-
 static bool indexTiploc(void *k, void *v, void *c) {
     struct TTTiploc *t = (struct TTTiploc *) v;
 
+    // tiploc id lookup
     hashmapPut(timetable->idTiploc, &t->id, t);
 
     // Should be 1-1 linkage here
@@ -44,8 +32,9 @@ static bool indexTiploc(void *k, void *v, void *c) {
             hashmapPut(timetable->crsTiploc, t->crs, t);
     }
 
+    // stanox can reference multiple tiplocs
     if (t->stanox > 0)
-        add(timetable->stanoxTiploc, &t->stanox, t);
+        hashmapAddList(timetable->stanoxTiploc, &t->stanox, t);
 
     return true;
 }
