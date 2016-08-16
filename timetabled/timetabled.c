@@ -71,7 +71,7 @@ static int parseargs(int argc, char** argv) {
 }
 
 static int opendb() {
-    char *db = genurl(database, ".db");
+    char *db = genurl(database, TT_SUFFIX_META);
     FILE *f = fopen(db,"r");
     free(db);
     if(!f)
@@ -82,13 +82,13 @@ static int opendb() {
     tt_idmap_read(f);
     fclose(f);
 
-    db = genurl(database, ".loc");
+    db = genurl(database, TT_SUFFIX_TIPLOC);
     int ret = tt_tiploc_read(timetable->loc, db);
     free(db);
     if (ret)
         return EXIT_FAILURE;
 
-    db = genurl(database, ".sch");
+    db = genurl(database, TT_SUFFIX_SCHEDULES);
     ret = tt_schedule_load(timetable->schedules, db);
     free(db);
     if (ret)

@@ -41,19 +41,19 @@ static int saveMeta(char *db) {
 int timetable_save(struct TimeTable *tt, char *filename) {
     logconsole("Writing timetable %s", filename);
 
-    char *db = genurl(filename, ".db");
+    char *db = genurl(filename, TT_SUFFIX_META);
     int ret = saveMeta(db);
     free(db);
 
     // Save tiploc data
     if (!ret) {
-        db = genurl(filename, ".loc");
+        db = genurl(filename, TT_SUFFIX_TIPLOC);
         ret = tt_tiploc_write(tt->loc, db);
         free(db);
     }
 
     if (!ret) {
-        db = genurl(filename, ".sch");
+        db = genurl(filename, TT_SUFFIX_SCHEDULES);
         logconsole("Writing schedule to %s", db);
         ret = tt_schedule_write(tt->schedules, db);
         free(db);

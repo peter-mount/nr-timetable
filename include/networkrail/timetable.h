@@ -38,6 +38,11 @@ extern "C" {
 
 #define TT_LOG_FORMAT_D "%10s %6d"
 
+    // The various file suffixes
+#define TT_SUFFIX_META      ".mta"
+#define TT_SUFFIX_TIPLOC    ".tpl"
+#define TT_SUFFIX_SCHEDULES ".sch"
+
     struct TTHeader {
         // Time of import
         time_t importTime;
