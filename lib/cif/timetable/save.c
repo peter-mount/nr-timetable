@@ -9,6 +9,20 @@
 #include <area51/string.h>
 #include <area51/file.h>
 
+extern struct TimeTable *timetable;
+
+static int saveMeta(char *db) {
+    logconsole("Writing metadata to %s", db);
+    backupFile(db);
+    FILE *f = fopen(db, "w");
+    if (!f) return EXIT_FAILURE;
+
+    fwrite(&timetable->header, sizeof (struct TTHeader), 1, f);
+    tt_idmap_write(f);
+    fclose(f);
+    return EXIT_SUCCESS;
+}
+
 /*
  * 
  * Creates the database files
@@ -27,18 +41,9 @@
 int timetable_save(struct TimeTable *tt, char *filename) {
     logconsole("Writing timetable %s", filename);
 
-    int ret = EXIT_SUCCESS;
     char *db = genurl(filename, ".db");
-    logconsole("Writing metadata to %s", db);
-    backupFile(db);
-    FILE *f = fopen(db, "w");
+    int ret = saveMeta(db);
     free(db);
-    if (!f) ret = EXIT_FAILURE;
-    else {
-        //fwrite(&tt->header, sizeof (struct TTHeader), 1, f);
-        tt_idmap_write(f);
-        fclose(f);
-    }
 
     // Save tiploc data
     if (!ret) {

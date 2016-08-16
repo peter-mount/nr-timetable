@@ -76,6 +76,9 @@ static int opendb() {
     free(db);
     if(!f)
         return EXIT_FAILURE;
+    fread(&timetable->header, sizeof (struct TTHeader), 1, f);
+    tt_log_header("Timetable");
+   
     tt_idmap_read(f);
     fclose(f);
 

@@ -54,23 +54,25 @@ static bool indexSchedule(void *k, void *v, void *c) {
 static bool indexSchedule2(void *k, void *v, void *c) {
     struct Schedule *s = (struct Schedule *) v;
 
-    int *max = (int *)c;
-    
-    if(*max < s->numEntries)
+    int *max = (int *) c;
+
+    if (*max < s->numEntries)
         *max = s->numEntries;
-    
+
     return true;
 }
 
 void tt_index() {
     logconsole("Indexing tiplocs");
     hashmapForEach(timetable->loc, indexTiploc, NULL);
+    logconsole(TT_LOG_FORMAT_D, "crs index", hashmapSize(timetable->crsTiploc));
+    logconsole(TT_LOG_FORMAT_D, "stanox index", hashmapSize(timetable->stanoxTiploc));
 
     logconsole("Indexing schedules");
     hashmapForEach(timetable->schedules, indexSchedule, NULL);
-    logconsole("Schedules %d uids %d", hashmapSize(timetable->schedules), hashmapSize(timetable->uid));
-    
-    int max=0;
+    logconsole(TT_LOG_FORMAT_D, "uid index", hashmapSize(timetable->uid));
+
+    int max = 0;
     hashmapForEach(timetable->schedules, indexSchedule2, &max);
-    logconsole("Max entries in schedule %d", max );
+    logconsole("Max entries in schedule %d", max);
 }

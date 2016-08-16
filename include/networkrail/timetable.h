@@ -33,6 +33,11 @@ extern "C" {
 #define TT_HEADER_MAINFRAMEID 20
 #define TT_HEADER_FILE_REF 7
 
+    // format used in logging number of entries when loading, e.g.
+    //logconsole(TT_LOG_FORMAT_D, "Schedules", hashmapSize(m));
+
+#define TT_LOG_FORMAT_D "%10s %6d"
+
     struct TTHeader {
         // Time of import
         time_t importTime;
@@ -92,6 +97,8 @@ extern "C" {
         Hashmap *uid;
     };
 
+    extern struct TimeTable *timetable;
+
     extern void purgeExpiredSchedule(struct Schedule *s);
     extern void purgeExpiredSchedules(struct TimeTable *t);
 
@@ -99,9 +106,9 @@ extern "C" {
 
     extern void timetable_initParser(struct TimeTable *tt);
 
-    extern int timetable_load(struct TimeTable *tt, char *filename);
     extern int timetable_save(struct TimeTable *tt, char *filename);
 
+    extern void tt_log_header(char *task);
     extern void tt_parse_ensure_capacity(struct TimeTable *t);
     extern void tt_parse_complete_schedule(struct TimeTable *t);
     extern struct ScheduleEntry *tt_parse_nextScheduleEntry(struct TimeTable *t);

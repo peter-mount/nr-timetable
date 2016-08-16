@@ -84,5 +84,5 @@ static bool readText(Hashmap *m, FILE *f) {
 
 void tt_idmap_read(FILE *f) {
     hashmapRead(timetable->idmap, readText, f);
-    logconsole("Read %d constants", (int) hashmapSize(timetable->idmap));
+    logconsole(TT_LOG_FORMAT_D, "Constants", (int) hashmapSize(timetable->idmap));
 }

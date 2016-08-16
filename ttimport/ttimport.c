@@ -76,6 +76,13 @@ static int scanFiles(int argc, char **argv, int arg, struct List *files) {
     }
 
     logconsole("Found %d files to import", list_size(files));
+
+    struct CifFile *first = (struct CifFile *) list_getHead(files);
+    if (!first->full) {
+        logconsole("A full CIF export is required but first file is an update");
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
 }
 
@@ -95,12 +102,6 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
 
     struct CifFile *first = (struct CifFile *) list_getHead(&files);
-    logconsole("Found %s type %s", first->node.name, first->full ? "F" : "U");
-    if (!first->full) {
-        if (timetable_load(timetable, newdb))
-            return EXIT_FAILURE;
-        purgeExpiredSchedules(timetable);
-    }
 
     // Import each cif in sequence
     timetable_initParser(timetable);

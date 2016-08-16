@@ -10,7 +10,6 @@ OBJS += cif/parser/free.o \
 
 OBJS += cif/timetable/getTiploc.o \
 	cif/timetable/initParser.o \
-	cif/timetable/load.o \
 	cif/timetable/new.o \
 	cif/timetable/purge.o \
 	cif/timetable/scheduleEntry.o \

@@ -13,7 +13,7 @@
 static void *readTiploc(Hashmap *m, void *p) {
     struct TTTiploc *t = (struct TTTiploc *) p;
     hashmapPut(m, t->tiploc, t);
-    return t+1;
+    return t + 1;
 }
 
 // NOTE: this may break if a tiploc is deleted or renamed
@@ -21,8 +21,6 @@ static void *readTiploc(Hashmap *m, void *p) {
 // for import, keeping this for the main application
 
 int tt_tiploc_read(Hashmap *m, char *filename) {
-    logconsole("Reading tiplocs from %s", filename);
-
     int fsock = open(filename, O_RDONLY);
     if (fsock == -1) {
         logconsole("Cannot open %s", filename);
@@ -30,7 +28,7 @@ int tt_tiploc_read(Hashmap *m, char *filename) {
     }
 
     hashmapReadMemMap(m, readTiploc, fsock);
-    
-    logconsole("Read %d", hashmapSize(m));
+
+    logconsole(TT_LOG_FORMAT_D, "Tiplocs", hashmapSize(m));
     return EXIT_SUCCESS;
 }

@@ -7,8 +7,27 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+extern struct TimeTable *timetable;
+
 static bool callback(struct Node *node, void *context) {
     return true;
+}
+
+void tt_log_header(char *task) {
+    struct tm tm;
+    char tm1[32], tm2[32], tm3[32];
+    localtime_r(&timetable->header.importTime, &tm);
+    strftime(tm1, 30, "%Y-%m-%d %H:%M:%S", &tm);
+
+    localtime_r(&timetable->header.userStart, &tm);
+    strftime(tm2, 30, "%Y-%m-%d", &tm);
+
+    localtime_r(&timetable->header.userEnd, &tm);
+    strftime(tm3, 30, "%Y-%m-%d", &tm);
+
+    logconsole("%s %s exported %s", task, timetable->header.fileRef, tm1);
+
+    logconsole("Schedules cover dates %s to %s", tm2, tm3);
 }
 
 int tt_parse_header(struct CIFParser *parser) {
@@ -28,22 +47,7 @@ int tt_parse_header(struct CIFParser *parser) {
 
     p->header.userEnd = cif_readDate_ddmmyy(parser->buf, 54, &tm);
 
-    char tm1[32], tm2[32], tm3[32];
-    localtime_r(&p->header.importTime, &tm);
-    strftime(tm1, 30, "%Y-%m-%d %H:%M:%S", &tm);
-
-    localtime_r(&p->header.userStart, &tm);
-    strftime(tm2, 30, "%Y-%m-%d", &tm);
-
-    localtime_r(&p->header.userEnd, &tm);
-    strftime(tm3, 30, "%Y-%m-%d", &tm);
-
-    logconsole("Importing %s (%s) runs from %s to %s as %s",
-            p->header.fileRef,
-            tm1,
-            tm2,
-            tm3,
-            update ? "Update" : "Full Import");
+    tt_log_header(update ? "Update extract" : "Full extract");
 
     return EXIT_SUCCESS;
 }

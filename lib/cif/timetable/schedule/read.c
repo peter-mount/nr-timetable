@@ -13,7 +13,7 @@ static bool read(Hashmap *m, FILE *f) {
     // Now allocate the true entry of the right size and insert into the map
     struct Schedule *s = (struct Schedule *) malloc(sizeof (struct Schedule));
     if (s) {
-        memset(s,0,sizeof(struct Schedule));
+        memset(s, 0, sizeof (struct Schedule));
         fread(s, sizeof (struct Schedule), 1, f);
 
         if (s->numEntries > 0) {
@@ -34,8 +34,6 @@ static bool read(Hashmap *m, FILE *f) {
 }
 
 int tt_schedule_load(Hashmap *m, char *filename) {
-    logconsole("Reading schedules from %s", filename);
-
     FILE *f = fopen(filename, "r");
     if (!f)
         return EXIT_FAILURE;
@@ -43,6 +41,6 @@ int tt_schedule_load(Hashmap *m, char *filename) {
     hashmapRead(m, read, f);
     fclose(f);
 
-    logconsole("Read %d schedules", hashmapSize(m));
+    logconsole(TT_LOG_FORMAT_D, "Schedules", hashmapSize(m));
     return EXIT_SUCCESS;
 }
