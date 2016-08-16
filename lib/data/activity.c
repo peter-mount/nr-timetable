@@ -10,7 +10,7 @@
 #include <limits.h>
 
 // If this hits 64 then we must resize the fields in ScheduleEntry
-#define SIZE 36
+#define SIZE 35
 
 // Chars 0 & 1 are the code in CIF
 // Chars 2... is the text. If none (i.e. we don't know it) then chars 0/1 are used
@@ -43,7 +43,6 @@ static const char *data[] = {
     "T ", "Stops to take up & set down passengers",
     "-T", "Stops to attach & detach vehicles",
     "TB", "Train begins (Origin)",
-    "TC", "Unknown activity 'TC'",
     "TF", "Train finishes (Destination)",
     "TS", "Details Consist for TOPS Direct",
     "TW", "Stops (or pass) for tablet, staff or token",

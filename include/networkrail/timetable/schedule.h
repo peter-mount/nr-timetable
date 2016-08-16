@@ -128,6 +128,7 @@ extern "C" {
     extern void mapTiploc_mapSchedule(Hashmap *m, struct Schedule *s);
     extern void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e);
 
+    extern void tt_schedules_result(struct charbuffer *b, struct List *l, bool (*filter)(struct Node *n,void *c),void *c);
     extern void tt_get_schedules_by_uid(struct charbuffer *b, const char *tiploc);
 
 #ifdef __cplusplus

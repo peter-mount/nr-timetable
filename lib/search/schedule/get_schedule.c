@@ -40,33 +40,10 @@ void tt_get_schedules_by_uid(struct charbuffer *b, const char *uid) {
     for (char *p = s; *p; p++)
         *p = toupper(*p);
 
+    // Simply use our list of schedule id's
     struct List * l = (struct List *) hashmapGet(timetable->uid, s);
+    free(s);
 
-    charbuffer_append(b, "{\"schedule\":");
-    json_append_list(b, l, tt_append_schedule_node);
+    tt_schedules_result(b, l, NULL, NULL);
 
-    if (l && !list_isEmpty(l)) {
-        // Generate index of tiplocs within the schedules
-        Hashmap *m = mapTiploc_new();
-        Hashmap *act = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
-
-        struct Node *n = list_getHead(l);
-        while (list_isNode(n)) {
-            mapTiploc_mapSchedule(m, (struct Schedule *) n->name);
-            ttref_add_schedule_activity(act, (struct Schedule *) n->name);
-            n = list_getNext(n);
-        }
-
-        charbuffer_append(b, ",\"tiploc\":{");
-        mapTiploc_appendIndex(b, m);
-        charbuffer_add(b, '}');
-        hashmapFree(m);
-
-        charbuffer_append(b, ",\"activity\":{");
-        ttref_print_activity_index(b, act);
-        charbuffer_add(b, '}');
-        hashmapFree(act);
-    }
-
-    charbuffer_add(b, '}');
 }

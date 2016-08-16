@@ -49,10 +49,6 @@ extern "C" {
      * @return 1 on error
      */
     extern int cif_file_add(struct List *list, char *filename);
-
-    extern int list_name_compare(struct Node *a, struct Node *b);
-    extern int list_name_casecompare(struct Node *a, struct Node *b);
-    extern void list_sort(struct List *list, int (*comparator)(struct Node *a, struct Node *b));
     
 #ifdef __cplusplus
 }
