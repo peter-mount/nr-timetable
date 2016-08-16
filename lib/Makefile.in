@@ -55,8 +55,6 @@ OBJS += data/activity.o \
 
 # Seaarch Rest interfaces
 
-OBJS += search/index.o
-
 # schedules
 OBJS += search/schedule/append_entry.o \
 	search/schedule/append_schedule.o \

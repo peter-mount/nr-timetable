@@ -10,15 +10,45 @@
 #include <area51/string.h>
 #include <fcntl.h>
 
+// callback to read a tiploc entry
 static void *readTiploc(Hashmap *m, void *p) {
     struct TTTiploc *t = (struct TTTiploc *) p;
     hashmapPut(m, t->tiploc, t);
     return t + 1;
 }
 
-// NOTE: this may break if a tiploc is deleted or renamed
-// during import. I'll probably write a non-memmapped version
-// for import, keeping this for the main application
+// Util to add an index entry where the entry is a linked list
+static void add(Hashmap *m, void *k, void *e) {
+    struct List *l = (struct List *) hashmapGet(m, k);
+    if (!l) {
+        l = (struct List *) malloc(sizeof (struct List));
+        list_init(l);
+        hashmapPut(m, k, l);
+    }
+
+    struct Node *n = node_alloc((char *) e);
+    list_addTail(l, n);
+}
+
+static bool indexTiploc(void *k, void *v, void *c) {
+    struct TTTiploc *t = (struct TTTiploc *) v;
+
+    hashmapPut(timetable->idTiploc, &t->id, t);
+
+    // Should be 1-1 linkage here
+    if (t->crs[0]) {
+        struct TTTiploc *e = (struct TTTiploc *) hashmapGet(timetable->crsTiploc, t->crs);
+        if (e)
+            logconsole("CRS %s on %s already linked to %s?", t->crs, t->tiploc, e->tiploc);
+        else
+            hashmapPut(timetable->crsTiploc, t->crs, t);
+    }
+
+    if (t->stanox > 0)
+        add(timetable->stanoxTiploc, &t->stanox, t);
+
+    return true;
+}
 
 int tt_tiploc_read(Hashmap *m, char *filename) {
     int fsock = open(filename, O_RDONLY);
@@ -28,7 +58,11 @@ int tt_tiploc_read(Hashmap *m, char *filename) {
     }
 
     hashmapReadMemMap(m, readTiploc, fsock);
-
     logconsole(TT_LOG_FORMAT_D, "Tiplocs", hashmapSize(m));
+
+    hashmapForEach(timetable->loc, indexTiploc, NULL);
+    logconsole(TT_LOG_FORMAT_D, "CRS/3alpha", hashmapSize(timetable->crsTiploc));
+    logconsole(TT_LOG_FORMAT_D, "Stanox", hashmapSize(timetable->stanoxTiploc));
+
     return EXIT_SUCCESS;
 }

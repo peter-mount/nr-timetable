@@ -110,8 +110,6 @@ int main(int argc, char** argv) {
     if (rc)
         return rc;
 
-    tt_index();
-
     webserver_set_defaults();
 
     // 3alpha & crs are the same thing
