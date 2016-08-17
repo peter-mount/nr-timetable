@@ -20,7 +20,7 @@ static bool writeSchedule(void *k, void *v, void *c) {
     FILE *f = (FILE *) c;
 
     fwrite(s, sizeof (struct Schedule), 1, f);
-    
+
     if (s->numEntries > 0)
         fwrite(s->entries, sizeof (struct ScheduleEntry), s->numEntries, f);
 

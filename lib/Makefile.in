@@ -60,7 +60,9 @@ OBJS += search/schedule/append_entry.o \
 	search/schedule/append_schedule.o \
 	search/schedule/append_time.o \
 	search/schedule/get_schedule.o \
-	search/schedule/result.o
+	search/schedule/result.o \
+	search/schedule/filter/date.o \
+	search/schedule/filter/dayRunning.o
 
 # tiplocs
 OBJS += search/tiploc/append_tiploc.o \

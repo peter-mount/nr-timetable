@@ -89,7 +89,7 @@ static int opendb() {
         return EXIT_FAILURE;
 
     db = genurl(database, TT_SUFFIX_SCHEDULES);
-    ret = tt_schedule_load(timetable->schedules, db);
+    ret = tt_schedule_load(db);
     free(db);
     if (ret)
         return EXIT_FAILURE;

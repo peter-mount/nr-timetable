@@ -115,7 +115,7 @@ extern "C" {
     extern int hashmapScheduleIdHash(void *str);
     extern int tt_parse_scheduleId(struct CIFParser *parser, struct ScheduleId *id);
     extern int tt_schedule_write(Hashmap *m, char *filename);
-    extern int tt_schedule_load(Hashmap *m, char *filename);
+    extern int tt_schedule_load(char *filename);
 
     extern void tt_append_schedule(struct charbuffer *b, struct Schedule *e);
     extern void tt_append_schedule_node(struct charbuffer *b, struct Node *n);
@@ -128,9 +128,16 @@ extern "C" {
     extern void mapTiploc_mapSchedule(Hashmap *m, struct Schedule *s);
     extern void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e);
 
-    extern void tt_schedules_result(struct charbuffer *b, struct List *l, bool (*filter)(struct Node *n,void *c),void *c);
+    // Stream collector to render schedules into a charbuffer
+    extern int tt_schedule_result(Stream *s);
+    
     extern void tt_get_schedules_by_uid(struct charbuffer *b, const char *tiploc);
 
+    // Filters
+    extern bool tt_schedule_filter_date(void *d, void *c);
+    
+    extern int tt_schedule_filter_dayRunning(Stream *s, time_t *t);
+    
 #ifdef __cplusplus
 }
 #endif

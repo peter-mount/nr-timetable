@@ -10,21 +10,35 @@
 #include <stdbool.h>
 #include <area51/list.h>
 #include <area51/log.h>
+#include <area51/stream.h>
 
 struct ctx {
     struct charbuffer *b;
     bool sep;
     Hashmap *tiploc;
     Hashmap *activity;
-    bool(*filter)(struct Node *n, void *c);
 };
 
-static bool forEach(struct Node *n, void *c) {
-    struct ctx *ctx = (struct ctx *) c;
+static void *init(void *c) {
+    struct ctx *ctx = malloc(sizeof (struct ctx));
+    if (ctx) {
+        ctx->b = c;
+        ctx->sep = false;
+        ctx->tiploc = mapTiploc_new();
+        ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);
 
-    if (ctx->filter == NULL || ctx->filter(n, c)) {
-        struct Schedule *s = (struct Schedule *) n->name;
+        charbuffer_append(ctx->b, "{\"schedule\":[");
+    }
 
+    return ctx;
+}
+
+static void next(void *c, void *v) {
+    if (c) {
+        struct ctx *ctx = c;
+
+        struct Schedule *s = (struct Schedule *) v;
+        
         if (ctx->sep)
             charbuffer_add(ctx->b, ',');
         else
@@ -38,51 +52,44 @@ static bool forEach(struct Node *n, void *c) {
         // Add activities to map
         ttref_add_schedule_activity(ctx->activity, s);
     }
+}
 
-    return true;
+static void *finish(void *c) {
+    if (c) {
+        struct ctx *ctx = c;
+
+        charbuffer_append(ctx->b, "],\"tiploc\":{");
+        if (ctx->tiploc)
+            mapTiploc_appendIndex(ctx->b, ctx->tiploc);
+
+        charbuffer_append(ctx->b, "},\"activity\":{");
+        if (ctx->activity)
+            ttref_print_activity_index(ctx->b, ctx->activity);
+
+        charbuffer_append(ctx->b, "}}");
+
+        if (ctx->tiploc)
+            hashmapFree(ctx->tiploc);
+
+        if (ctx->activity)
+            hashmapFree(ctx->activity);
+
+        free(ctx);
+    }
+
+    return NULL;
 }
 
 /*
- * Handles the common response format for a schedule search.
+ * Stream collector that will add Schedules to the standard result json.
  * 
- * @param b charbuffer to write to
- * @param l List containing Schedules
- * @param filter optional filter to run against each result
- * @oaran c context to pass to the filter
+ * struct charbuffer *b;
+ * Stream *stream;
+ * tt_schedule_result(stream);
+ * stream_run(stream, b);
+ * 
+ * where b is the charbuffer to append the result json to.
  */
-void tt_schedules_result(struct charbuffer *b, struct List *l, bool(*filter)(struct Node *n, void *c), void *c) {
-    charbuffer_append(b, "{\"schedule\":[");
-    //json_append_list(b, l, tt_append_schedule_node);
-
-    if (l && !list_isEmpty(l)) {
-        struct ctx ctx;
-        ctx.b = b;
-        ctx.sep = false;
-        ctx.filter = filter;
-
-        ctx.tiploc = mapTiploc_new();
-        if (!ctx.tiploc)
-            return;
-
-        ctx.activity = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
-        if (!ctx.activity) {
-            hashmapFree(ctx.tiploc);
-            return;
-        }
-
-        list_forEach(l, forEach, &ctx);
-
-        charbuffer_append(b, "],\"tiploc\":{");
-        mapTiploc_appendIndex(b, ctx.tiploc);
-        charbuffer_add(b, '}');
-
-        charbuffer_append(b, ",\"activity\":{");
-        ttref_print_activity_index(b, ctx.activity);
-        charbuffer_add(b, '}');
-
-        hashmapFree(ctx.tiploc);
-        hashmapFree(ctx.activity);
-    }
-
-    charbuffer_add(b, '}');
+int tt_schedule_result(Stream *s) {
+    return stream_collect(s, init, next, finish);
 }
