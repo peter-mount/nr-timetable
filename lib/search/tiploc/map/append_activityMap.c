@@ -12,7 +12,7 @@
 #include <area51/log.h>
 
 struct ctx {
-    struct charbuffer *b;
+    CharBuffer *b;
     bool sep;
 };
 
@@ -38,7 +38,7 @@ static bool append(void *k, void *v, void *c) {
  * Note: The keys are ignored so can be anything, just the values must be correct.
  * 
  */
-void mapTiploc_appendIndex(struct charbuffer *b, Hashmap *m) {
+void mapTiploc_appendIndex(CharBuffer *b, Hashmap *m) {
     struct ctx ctx;
     ctx.b = b;
     ctx.sep = false;

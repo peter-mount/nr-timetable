@@ -16,7 +16,7 @@ int ttref_parse_daysRun(char *s) {
     return d;
 }
 
-static void append(struct charbuffer *b, int s, int e) {
+static void append(CharBuffer *b, int s, int e) {
     if (s >= 0 && s < e) {
         charbuffer_put(b, &dow[s * 3], 3);
         // Successive days separate with , otherwise range -
@@ -25,7 +25,7 @@ static void append(struct charbuffer *b, int s, int e) {
     charbuffer_put(b, &dow[e * 3], 3);
 }
 
-void ttref_print_daysRun(struct charbuffer *b, int dr) {
+void ttref_print_daysRun(CharBuffer *b, int dr) {
     bool notFirst = false;
     int prev = INT_MIN, start = INT_MIN;
     for (int i = 0; i < 7; i++) {

@@ -117,13 +117,13 @@ extern "C" {
     extern int tt_schedule_write(Hashmap *m, char *filename);
     extern int tt_schedule_load(char *filename);
 
-    extern void tt_append_schedule(struct charbuffer *b, struct Schedule *e);
-    extern void tt_append_schedule_node(struct charbuffer *b, Node *n);
+    extern void tt_append_schedule(CharBuffer *b, struct Schedule *e);
+    extern void tt_append_schedule_node(CharBuffer *b, Node *n);
 
-    extern void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e);
+    extern void tt_append_scheduleEntry(CharBuffer *b, struct ScheduleEntry *e);
 
-    extern void append_hhmm(struct charbuffer *b, char *n, int tm);
-    extern void append_hhmmss(struct charbuffer *b, char *n, int tm);
+    extern void append_hhmm(CharBuffer *b, char *n, int tm);
+    extern void append_hhmmss(CharBuffer *b, char *n, int tm);
 
     extern void mapTiploc_mapSchedule(Hashmap *m, struct Schedule *s);
     extern void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e);
@@ -131,7 +131,7 @@ extern "C" {
     // Stream collector to render schedules into a charbuffer
     extern int tt_schedule_result(Stream *s);
     
-    extern void tt_get_schedules_by_uid(struct charbuffer *b, const char *tiploc);
+    extern void tt_get_schedules_by_uid(CharBuffer *b, const char *tiploc);
 
     // Filters
     extern bool tt_schedule_filter_date(void *d, void *c);

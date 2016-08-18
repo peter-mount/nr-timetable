@@ -70,7 +70,7 @@ long ttref_parse_activity(char *v) {
     return c;
 }
 
-void ttref_print_activity(struct charbuffer *b, long dr) {
+void ttref_print_activity(CharBuffer *b, long dr) {
     if (!dr)
         charbuffer_append(b, "null");
     else {
@@ -113,7 +113,7 @@ void ttref_add_schedule_activity(Hashmap *map, struct Schedule *s) {
 }
 
 struct ctx {
-    struct charbuffer *b;
+    CharBuffer *b;
     bool sep;
 };
 
@@ -124,7 +124,7 @@ static bool append(void *k, void *v, void *c) {
     return true;
 }
 
-void ttref_print_activity_index(struct charbuffer *b, Hashmap *m) {
+void ttref_print_activity_index(CharBuffer *b, Hashmap *m) {
     struct ctx ctx;
     ctx.b = b;
     ctx.sep = false;

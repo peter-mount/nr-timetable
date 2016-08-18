@@ -13,7 +13,7 @@
 
 extern struct TimeTable *timetable;
 
-void tt_append_tiploc(struct charbuffer *b, struct TTTiploc *tpl) {
+void tt_append_tiploc(CharBuffer *b, struct TTTiploc *tpl) {
     if (tpl) {
         charbuffer_append(b, "{\"tiploc\":");
         json_append_str(b, tpl->tiploc);
@@ -43,7 +43,7 @@ void tt_append_tiploc(struct charbuffer *b, struct TTTiploc *tpl) {
     }
 }
 
-void tt_append_tiploc_node(struct charbuffer *b, Node *n) {
+void tt_append_tiploc_node(CharBuffer *b, Node *n) {
     tt_append_tiploc(b, (struct TTTiploc *) n->name);
 }
 

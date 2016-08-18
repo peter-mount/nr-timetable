@@ -13,7 +13,7 @@
 
 extern struct TimeTable *timetable;
 
-void tt_find_tiploc(struct charbuffer *b, const char *tiploc) {
+void tt_find_tiploc(CharBuffer *b, const char *tiploc) {
     char *s = strdup(tiploc);
     for (char *p = s; *p; p++)
         *p = toupper(*p);

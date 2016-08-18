@@ -44,7 +44,7 @@ static bool uidFilter(void *v, void *c) {
     return strcmp((char*) e->key, uid) == 0;
 }
 
-void tt_get_schedules_by_uid(struct charbuffer *b, const char *uri) {
+void tt_get_schedules_by_uid(CharBuffer *b, const char *uri) {
     // writable copy of uri
     char uid[strlen(uri) + 1];
     strcpy(uid, uri);

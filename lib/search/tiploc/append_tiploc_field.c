@@ -21,7 +21,7 @@ extern struct TimeTable *timetable;
  * 
  * Note: If tiploc is 0 or there is no mapping then this will generate "origin":null
  */
-void tt_append_tiploc_field(struct charbuffer *b, char *n, short tiploc) {
+void tt_append_tiploc_field(CharBuffer *b, char *n, short tiploc) {
     json_append_str(b, n);
     charbuffer_add(b, ':');
 

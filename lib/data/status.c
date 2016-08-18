@@ -34,7 +34,7 @@ static struct table data[] = {
     {'5', bus, false, false}
 };
 
-void ttref_print_status(struct charbuffer *b, int id) {
+void ttref_print_status(CharBuffer *b, int id) {
     if (id < 1 || id > SIZE) {
         charbuffer_append(b, "null");
         return;

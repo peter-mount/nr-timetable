@@ -34,12 +34,12 @@ extern "C" {
     extern int tt_tiploc_read(Hashmap *m, char *filename);
     extern int tt_tiploc_write(Hashmap *m, char *filename);
 
-    extern void tt_find_tiploc(struct charbuffer *b, const char *tiploc);
-    extern void tt_find_tiploc_by_crs(struct charbuffer *b, const char *crs);
-    extern void tt_find_tiploc_by_stanox(struct charbuffer *b, int stanox);
-    extern void tt_append_tiploc_field(struct charbuffer *b, char *n, short tiploc);
-    extern void tt_append_tiploc(struct charbuffer *b, struct TTTiploc *tpl);
-    extern void tt_append_tiploc_node(struct charbuffer *b, Node *n);
+    extern void tt_find_tiploc(CharBuffer *b, const char *tiploc);
+    extern void tt_find_tiploc_by_crs(CharBuffer *b, const char *crs);
+    extern void tt_find_tiploc_by_stanox(CharBuffer *b, int stanox);
+    extern void tt_append_tiploc_field(CharBuffer *b, char *n, short tiploc);
+    extern void tt_append_tiploc(CharBuffer *b, struct TTTiploc *tpl);
+    extern void tt_append_tiploc_node(CharBuffer *b, Node *n);
 
 #ifdef __cplusplus
 }

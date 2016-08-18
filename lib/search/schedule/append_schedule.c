@@ -14,7 +14,7 @@
 
 extern struct TimeTable *timetable;
 
-void json_append_date_ISO(struct charbuffer *b, time_t *t) {
+void json_append_date_ISO(CharBuffer *b, time_t *t) {
     struct tm tm;
     if (t && *t) {
         gmtime_r(t, &tm);
@@ -23,7 +23,7 @@ void json_append_date_ISO(struct charbuffer *b, time_t *t) {
         json_append_str(b, "null");
 }
 
-void json_append_time_hhmm(struct charbuffer *b, time_t *t) {
+void json_append_time_hhmm(CharBuffer *b, time_t *t) {
     struct tm tm;
     if (t && *t) {
         gmtime_r(t, &tm);
@@ -32,7 +32,7 @@ void json_append_time_hhmm(struct charbuffer *b, time_t *t) {
         json_append_str(b, "null");
 }
 
-void json_append_time_hhmmss(struct charbuffer *b, time_t *t) {
+void json_append_time_hhmmss(CharBuffer *b, time_t *t) {
     struct tm tm;
     if (t && *t) {
         gmtime_r(t, &tm);
@@ -41,7 +41,7 @@ void json_append_time_hhmmss(struct charbuffer *b, time_t *t) {
         json_append_str(b, "null");
 }
 
-void json_append_datetime_ISO(struct charbuffer *b, time_t *t) {
+void json_append_datetime_ISO(CharBuffer *b, time_t *t) {
     struct tm tm;
     if (t && *t) {
         gmtime_r(t, &tm);
@@ -52,7 +52,7 @@ void json_append_datetime_ISO(struct charbuffer *b, time_t *t) {
         json_append_str(b, "null");
 }
 
-void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
+void tt_append_schedule(CharBuffer *b, struct Schedule *e) {
     if (e) {
         charbuffer_append(b, "{\"uid\":");
         json_append_str(b, e->id.uid);
@@ -157,6 +157,6 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
     }
 }
 
-void tt_append_schedule_node(struct charbuffer *b, Node *n) {
+void tt_append_schedule_node(CharBuffer *b, Node *n) {
     tt_append_schedule(b, (struct Schedule *) n->name);
 }

@@ -13,7 +13,7 @@
 #include <area51/stream.h>
 
 struct ctx {
-    struct charbuffer *b;
+    CharBuffer *b;
     bool sep;
     Hashmap *tiploc;
     Hashmap *activity;
@@ -83,7 +83,7 @@ static void *finish(void *c) {
 /*
  * Stream collector that will add Schedules to the standard result json.
  * 
- * struct charbuffer *b;
+ * CharBuffer *b;
  * Stream *stream;
  * tt_schedule_result(stream);
  * stream_run(stream, b);

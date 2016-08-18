@@ -36,7 +36,7 @@ int ttref_parse_catering(char *v) {
     return c;
 }
 
-void ttref_print_catering(struct charbuffer *b, int dr) {
+void ttref_print_catering(CharBuffer *b, int dr) {
     if (!dr)
         charbuffer_append(b, "null");
     else {

@@ -16,7 +16,7 @@ static char type[] = {
     'O', 'I', 'T'
 };
 
-void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e) {
+void tt_append_scheduleEntry(CharBuffer *b, struct ScheduleEntry *e) {
     if (e) {
         charbuffer_append(b, "{\"type\":\"");
         // TODO e->type=='R" then use C not L here

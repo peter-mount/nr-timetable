@@ -13,7 +13,7 @@
 
 extern struct TimeTable *timetable;
 
-void tt_find_tiploc_by_crs(struct charbuffer *b, const char *crs) {
+void tt_find_tiploc_by_crs(CharBuffer *b, const char *crs) {
     struct TTTiploc *tpl = NULL;
 
     if (crs && strlen(crs) == 3) {

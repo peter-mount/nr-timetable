@@ -42,7 +42,7 @@ int ttref_parse_opchar(char *v) {
     return c;
 }
 
-void ttref_print_opchar(struct charbuffer *b, int dr) {
+void ttref_print_opchar(CharBuffer *b, int dr) {
     if (!dr)
         charbuffer_append(b, "null");
     else {

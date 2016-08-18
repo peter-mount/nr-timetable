@@ -120,7 +120,7 @@ extern "C" {
 
     extern Hashmap *mapTiploc_new();
     extern void mapTiploc_addTiploc(Hashmap *m, short tiploc);
-    extern void mapTiploc_appendIndex(struct charbuffer *b, Hashmap *m);
+    extern void mapTiploc_appendIndex(CharBuffer *b, Hashmap *m);
 
     extern struct TTTiploc *tt_getTiploc(struct TimeTable *t, char *tiploc);
 
