@@ -58,7 +58,7 @@ static int about(char *cmd) {
     return EXIT_FAILURE;
 }
 
-static int scanFiles(int argc, char **argv, int arg, struct List *files) {
+static int scanFiles(int argc, char **argv, int arg, List *files) {
     logconsole("Scanning CIF files");
 
     for (; arg < argc; arg++) {
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     int arg = 1;
     char *newdb = argv[arg++];
 
-    struct List files;
+    List files;
     list_init(&files);
     if (scanFiles(argc, argv, arg, &files))
         return EXIT_FAILURE;
@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
 
     // Import each cif in sequence
     timetable_initParser(timetable);
-    struct Node *n = list_getHead(&files);
+    Node *n = list_getHead(&files);
     while (list_isNode(n)) {
         if (importCIF(n->name))
             return EXIT_FAILURE;

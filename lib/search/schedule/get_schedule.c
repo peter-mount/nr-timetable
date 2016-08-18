@@ -37,6 +37,13 @@
  * text for each location etc.
  * 
  */
+
+static bool uidFilter(void *v, void *c) {
+    KeyValue *e = v;
+    char *uid = c;
+    return strcmp((char*) e->key, uid) == 0;
+}
+
 void tt_get_schedules_by_uid(struct charbuffer *b, const char *uri) {
     // writable copy of uri
     char uid[strlen(uri) + 1];
@@ -61,7 +68,13 @@ void tt_get_schedules_by_uid(struct charbuffer *b, const char *uri) {
         t = mktime(&tm);
     }
 
-    Stream *stream = list_stream((struct List *) hashmapGet(timetable->uid, uid));
+    // Start searching for the uuid
+    Stream *stream = stream_of(uid, NULL);
+    hashmapGetMapper(stream, timetable->uid);
+    stream_notNull(stream);
+
+    // flatMap the list to nodes
+    stream_flatMap(stream, list_flatMap, NULL);
 
     // Get Schedule from node->name
     list_map_node_name(stream);

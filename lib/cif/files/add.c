@@ -18,7 +18,7 @@
 
 #define MIN_FILE_SIZE 81
 
-int cif_file_add(struct List *list, char *filename) {
+int cif_file_add(List *list, char *filename) {
 
     int fsock = open(filename, O_RDONLY);
     if (fsock == -1) {

@@ -43,7 +43,7 @@ void tt_append_tiploc(struct charbuffer *b, struct TTTiploc *tpl) {
     }
 }
 
-void tt_append_tiploc_node(struct charbuffer *b, struct Node *n) {
+void tt_append_tiploc_node(struct charbuffer *b, Node *n) {
     tt_append_tiploc(b, (struct TTTiploc *) n->name);
 }
 

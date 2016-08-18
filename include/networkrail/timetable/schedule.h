@@ -49,7 +49,7 @@ extern "C" {
     // TODO P22 change en-route
 
     struct ScheduleEntry {
-        //struct Node node;
+        //Node node;
         // "O", "I", "T" for Origin etc, i.e. LO, LI, LT
         unsigned int type : 2;
         // Tiploc (currently 10k) room for 500 entries before increasing this
@@ -76,7 +76,7 @@ extern "C" {
     };
 
     struct Schedule {
-        //struct Node node;
+        //Node node;
         struct ScheduleId id;
         time_t end;
 
@@ -118,7 +118,7 @@ extern "C" {
     extern int tt_schedule_load(char *filename);
 
     extern void tt_append_schedule(struct charbuffer *b, struct Schedule *e);
-    extern void tt_append_schedule_node(struct charbuffer *b, struct Node *n);
+    extern void tt_append_schedule_node(struct charbuffer *b, Node *n);
 
     extern void tt_append_scheduleEntry(struct charbuffer *b, struct ScheduleEntry *e);
 

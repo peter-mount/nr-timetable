@@ -157,6 +157,6 @@ void tt_append_schedule(struct charbuffer *b, struct Schedule *e) {
     }
 }
 
-void tt_append_schedule_node(struct charbuffer *b, struct Node *n) {
+void tt_append_schedule_node(struct charbuffer *b, Node *n) {
     tt_append_schedule(b, (struct Schedule *) n->name);
 }

@@ -63,7 +63,7 @@ extern "C" {
         struct Schedule *curschedule;
         int entryCount, numEntries;
         struct ScheduleEntry *entries;
-        struct List *curentries;
+        List *curentries;
 
         // =======================
         // Common to all code

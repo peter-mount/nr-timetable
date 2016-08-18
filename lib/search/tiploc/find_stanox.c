@@ -12,6 +12,6 @@
 extern struct TimeTable *timetable;
 
 void tt_find_tiploc_by_stanox(struct charbuffer *b, int stanox) {
-    struct List *l = (struct List *) hashmapGet(timetable->stanoxTiploc, &stanox);
+    List *l = (List *) hashmapGet(timetable->stanoxTiploc, &stanox);
     json_append_list(b,l,tt_append_tiploc_node);
 }

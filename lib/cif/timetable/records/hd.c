@@ -9,7 +9,7 @@
 
 extern struct TimeTable *timetable;
 
-static bool callback(struct Node *node, void *context) {
+static bool callback(Node *node, void *context) {
     return true;
 }
 

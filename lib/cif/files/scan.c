@@ -12,7 +12,7 @@
  * @param b
  * @return 
  */
-static int comparator(struct Node *a, struct Node *b) {
+static int comparator(Node *a, Node *b) {
     struct CifFile *af = (struct CifFile *) a;
     struct CifFile *bf = (struct CifFile *) b;
 
@@ -27,12 +27,12 @@ static int comparator(struct Node *a, struct Node *b) {
     return af->full ? -11 : af->full == bf->full ? 0 : 1;
 }
 
-static void resolveFullImport(struct List *list) {
+static void resolveFullImport(List *list) {
     bool full = false;
     
     // Find the last (if any) full import then remove all before it
     struct CifFile *fullFile;
-    struct Node *n = list_getTail(list);
+    Node *n = list_getTail(list);
     while (!full && list_isNode(n)) {
         fullFile = (struct CifFile *) n;
         full = fullFile->full;
@@ -43,7 +43,7 @@ static void resolveFullImport(struct List *list) {
     if (full) {
         // Remove all nodes before it as no point
         while (list_isNode(n)) {
-            struct Node *p = list_getPred(n);
+            Node *p = list_getPred(n);
             list_remove(n);
             free(n);
             n = p;
@@ -58,7 +58,7 @@ static void resolveFullImport(struct List *list) {
     }
     
 }
-int cif_file_scan(struct List *list) {
+int cif_file_scan(List *list) {
 
     // sort the list by order of their CIF import times
     list_sort(list, comparator);

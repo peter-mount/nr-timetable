@@ -16,7 +16,7 @@
 
 static char *STP = "CNOP";
 
-static int comparator(struct Node *a, struct Node *b) {
+static int comparator(Node *a, Node *b) {
 
     struct Schedule *sa = (struct Schedule *) a->name;
     struct Schedule *sb = (struct Schedule *) b->name;
@@ -39,7 +39,7 @@ static int comparator(struct Node *a, struct Node *b) {
 }
 
 static bool sortSchedules(void *k, void *v, void *c) {
-    struct List *l = v;
+    List *l = v;
     list_sort(l, comparator);
     return true;
 }

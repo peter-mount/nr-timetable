@@ -27,7 +27,7 @@ extern "C" {
 
     struct CifFile {
         // node.name will hold the file name
-        struct Node node;
+        Node node;
         time_t time;
         bool full;
     };
@@ -40,7 +40,7 @@ extern "C" {
      * @param list
      * @return 1 on error
      */
-    extern int cif_file_scan(struct List *list);
+    extern int cif_file_scan(List *list);
 
     /**
      * Add a file to the list
@@ -48,7 +48,7 @@ extern "C" {
      * @param filename
      * @return 1 on error
      */
-    extern int cif_file_add(struct List *list, char *filename);
+    extern int cif_file_add(List *list, char *filename);
     
 #ifdef __cplusplus
 }
