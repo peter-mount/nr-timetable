@@ -129,15 +129,23 @@ extern "C" {
     extern void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e);
 
     // Stream collector to render schedules into a charbuffer
-    extern int tt_schedule_result(Stream *s);
-    
-    extern void tt_get_schedules_by_uid(CharBuffer *b, const char *tiploc);
+    extern int tt_schedule_result(Stream *s, CharBuffer *);
+
+    // rest services
+    extern void tt_get_schedules_by_stanox(CharBuffer *, const char *);
+    extern void tt_get_schedules_by_uid(CharBuffer *, const char *);
+
+    // Searches
+    extern Stream *tt_search_schedules_by_stanox(int);
+    extern Stream *tt_search_schedules_by_uid(char *);
 
     // Filters
-    extern bool tt_schedule_filter_date(void *d, void *c);
-    
-    extern int tt_schedule_filter_dayRunning(Stream *s, time_t *t);
-    
+    extern int tt_filter_schedules_runson_date(Stream *stream, time_t *t);
+    extern int tt_filter_schedule_contains_date(Stream *, time_t *);
+
+    extern int tt_schedule_filter_runson_daysofweek(Stream *s, int dow);
+    extern int tt_schedule_filter_runson_sameday(Stream *s, time_t *t);
+
 #ifdef __cplusplus
 }
 #endif

@@ -55,14 +55,27 @@ OBJS += data/activity.o \
 
 # Seaarch Rest interfaces
 
-# schedules
-OBJS += search/schedule/append_entry.o \
-	search/schedule/append_schedule.o \
-	search/schedule/append_time.o \
-	search/schedule/get_schedule.o \
-	search/schedule/result.o \
-	search/schedule/filter/date.o \
-	search/schedule/filter/dayRunning.o
+# API endpoints
+OBJS += api/schedule/stanox.o \
+	api/schedule/uid.o
+
+# JSON result collectors
+OBJS += json/append_entry.o \
+	json/append_schedule.o \
+	json/append_time.o \
+	json/result.o
+
+# Filters
+OBJS +=	filter/schedule/contains_date.o \
+	filter/schedule/dayRunning.o \
+	filter/schedule/runs_on_date.o \
+	filter/keyvalue_string.o
+
+# searches
+OBJS += search/schedule/find_by_stanox.o \
+	search/schedule/find_by_uid.o
+#	search/schedule/api/get_schedule_stanox.o \
+#	search/schedule/api/get_schedule.o \
 
 # tiplocs
 OBJS += search/tiploc/append_tiploc.o \

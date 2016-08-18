@@ -19,18 +19,10 @@ struct ctx {
     Hashmap *activity;
 };
 
-static void *init(void *c) {
-    struct ctx *ctx = malloc(sizeof (struct ctx));
-    if (ctx) {
-        ctx->b = c;
-        ctx->sep = false;
-        ctx->tiploc = mapTiploc_new();
-        ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);
-
+static void init(void *c) {
+    struct ctx *ctx = c;
+    if (ctx)
         charbuffer_append(ctx->b, "{\"schedule\":[");
-    }
-
-    return ctx;
 }
 
 static void next(void *c, void *v) {
@@ -38,7 +30,7 @@ static void next(void *c, void *v) {
         struct ctx *ctx = c;
 
         struct Schedule *s = (struct Schedule *) v;
-        
+
         if (ctx->sep)
             charbuffer_add(ctx->b, ',');
         else
@@ -90,6 +82,19 @@ static void *finish(void *c) {
  * 
  * where b is the charbuffer to append the result json to.
  */
-int tt_schedule_result(Stream *s) {
-    return stream_collect(s, init, next, finish);
+int tt_schedule_result(Stream *s, CharBuffer *b) {
+    struct ctx *ctx = malloc(sizeof (struct ctx));
+    if (ctx) {
+        ctx->b = b;
+        ctx->sep = false;
+        ctx->tiploc = mapTiploc_new();
+        ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);
+
+        if (!stream_collect(s, init, next, finish, ctx, free))
+            return EXIT_SUCCESS;
+
+        free(ctx);
+    }
+
+    return EXIT_FAILURE;
 }

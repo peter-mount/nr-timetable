@@ -38,12 +38,6 @@
  * 
  */
 
-static bool uidFilter(void *v, void *c) {
-    KeyValue *e = v;
-    char *uid = c;
-    return strcmp((char*) e->key, uid) == 0;
-}
-
 void tt_get_schedules_by_uid(CharBuffer *b, const char *uri) {
     // writable copy of uri
     char uid[strlen(uri) + 1];
@@ -68,30 +62,25 @@ void tt_get_schedules_by_uid(CharBuffer *b, const char *uri) {
         t = mktime(&tm);
     }
 
-    // Start searching for the uuid
-    Stream *stream = stream_of(uid, NULL);
-    hashmapGetMapper(stream, timetable->uid);
-    stream_notNull(stream);
+    Stream *stream = tt_search_schedules_by_uid(uid);
+    if (!stream)
+        return;
 
-    // flatMap the list to nodes
-    stream_flatMap(stream, list_flatMap, NULL);
+    int r = EXIT_SUCCESS;
 
-    // Get Schedule from node->name
-    list_map_node_name(stream);
-
-    // Add dateFilter
     if (datePresent) {
-        // Filter only schedules containing the specified date and find the first entry
-        stream_filter(stream, tt_schedule_filter_date, &t, NULL);
-        // Limit to days the schedules run against
-        tt_schedule_filter_dayRunning(stream, &t);
-        // We want just the first
-        stream_findFirst(stream);
+        // Filter only schedules containing the specified date and we want
+        // just the first entry found.
+        r = tt_filter_schedules_runson_date(stream, &t);
+        if (!r) r = stream_findFirst(stream);
     }
 
     // Now collect using the schedule result collector and run
-    tt_schedule_result(stream);
-    //stream_debug(stream);
-    stream_run(stream, b);
+    if (!r) r = tt_schedule_result(stream, b);
+
+    if (!r)
+        stream_run(stream, NULL);
+    else
+        stream_free(stream);
 
 }

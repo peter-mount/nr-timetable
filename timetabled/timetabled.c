@@ -126,6 +126,7 @@ int main(int argc, char** argv) {
      */
 
     webserver_add_search_str("/schedule/uid", tt_get_schedules_by_uid);
+    webserver_add_search_str("/schedule/stanox", tt_get_schedules_by_stanox);
     
     logconsole("Starting webserver on port %d", webserver.port);
     webserver_start();
