@@ -54,6 +54,8 @@ void json_append_datetime_ISO(CharBuffer *b, time_t *t) {
 
 void tt_append_schedule(CharBuffer *b, struct Schedule *e) {
     if (e) {
+        struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &e->id);
+        
         charbuffer_append(b, "{\"uid\":");
         json_append_str(b, e->id.uid);
 
@@ -69,13 +71,13 @@ void tt_append_schedule(CharBuffer *b, struct Schedule *e) {
         charbuffer_append(b, ",\"end\":");
         json_append_date_ISO(b, &e->end);
 
-        if (e->numEntries) {
+        if (entries) {
             charbuffer_add(b, ',');
-            tt_append_tiploc_field(b, "origin", e->entries[0].tiploc);
+            tt_append_tiploc_field(b, "origin", entries[0].tiploc);
             charbuffer_add(b, ',');
-            tt_append_tiploc_field(b, "dest", e->entries[e->numEntries-1].tiploc);
+            tt_append_tiploc_field(b, "dest", entries[e->numEntries - 1].tiploc);
         }
-        
+
         // daysRun
         charbuffer_append(b, ",\"daysRun\":");
         ttref_print_daysRun(b, e->daysRun);
@@ -138,13 +140,13 @@ void tt_append_schedule(CharBuffer *b, struct Schedule *e) {
         }
 
         // Schedule entries
-        if (e->numEntries) {
+        if (entries) {
             charbuffer_append(b, ",\"entries\":");
             charbuffer_add(b, '[');
             for (int i = 0; i < e->numEntries; i++) {
                 if (i > 0)
                     charbuffer_add(b, ',');
-                tt_append_scheduleEntry(b, &e->entries[i]);
+                tt_append_scheduleEntry(b, &entries[i]);
             }
             charbuffer_add(b, ']');
         } else

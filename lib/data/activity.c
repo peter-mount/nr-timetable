@@ -108,8 +108,10 @@ void ttref_add_activity(Hashmap *map, long dr) {
 }
 
 void ttref_add_schedule_activity(Hashmap *map, struct Schedule *s) {
-    for (int i = 0; i < s->numEntries; i++)
-        ttref_add_activity(map, s->entries[i].activity);
+    struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &s->id);
+    if (entries)
+        for (int i = 0; i < s->numEntries; i++)
+            ttref_add_activity(map, entries[i].activity);
 }
 
 struct ctx {

@@ -21,8 +21,14 @@ static bool writeSchedule(void *k, void *v, void *c) {
 
     fwrite(s, sizeof (struct Schedule), 1, f);
 
-    if (s->numEntries > 0)
-        fwrite(s->entries, sizeof (struct ScheduleEntry), s->numEntries, f);
+    if (s->numEntries > 0) {
+        struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &s->id);
+        if (entries == NULL) {
+            logconsole("Schedule without entries");
+            abort();
+        }
+        fwrite(entries, sizeof (struct ScheduleEntry), s->numEntries, f);
+    }
 
     return true;
 }

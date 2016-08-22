@@ -108,7 +108,7 @@ extern "C" {
 
         // Max numEntries seen is 150
         unsigned int numEntries : 8;
-        struct ScheduleEntry *entries;
+        //struct ScheduleEntry *entries;
     };
 
     extern bool hashmapScheduleIdEquals(void *key_a, void *key_b);

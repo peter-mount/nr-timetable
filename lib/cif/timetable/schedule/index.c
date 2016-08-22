@@ -113,8 +113,9 @@ static bool indexSchedule(void *k, void *v, void *c) {
 
     int sid = getId(&s->id);
 
+    struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry,&s->id);
     for (int i = 0; i < s->numEntries; i++)
-        indexEntry(sid, &s->entries[i], (struct stat *) c);
+        indexEntry(sid, &entries[i], (struct stat *) c);
 
     return true;
 }

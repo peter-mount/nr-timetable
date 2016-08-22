@@ -18,6 +18,8 @@ void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e) {
  * The map must be keyed against a short (i.e. TTTiploc.id)
  */
 void mapTiploc_mapSchedule(Hashmap *m, struct Schedule *s) {
-    for (int i = 0; i < s->numEntries; i++)
-        mapTiploc_mapScheduleEntry(m, &s->entries[i]);
+    struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &s->id);
+    if (entries)
+        for (int i = 0; i < s->numEntries; i++)
+            mapTiploc_mapScheduleEntry(m, &entries[i]);
 }

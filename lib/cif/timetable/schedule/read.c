@@ -52,18 +52,19 @@ static bool read(Hashmap *m, FILE *f) {
     if (s) {
         memset(s, 0, sizeof (struct Schedule));
         fread(s, sizeof (struct Schedule), 1, f);
+        hashmapPut(m, &s->id, s);
 
         if (s->numEntries > 0) {
-            s->entries = (struct ScheduleEntry *) malloc(s->numEntries * sizeof (struct ScheduleEntry));
-            if (!s->entries) {
+            struct ScheduleEntry *entries = (struct ScheduleEntry *) malloc(s->numEntries * sizeof (struct ScheduleEntry));
+            if (!entries) {
                 free(s);
                 return false;
-            } else
-                fread(s->entries, sizeof (struct ScheduleEntry), s->numEntries, f);
-        } else
-            s->entries = NULL;
+            }
 
-        hashmapPut(m, &s->id, s);
+            fread(entries, sizeof (struct ScheduleEntry), s->numEntries, f);
+            hashmapPut(timetable->scheduleEntry, &s->id, entries);
+        }
+        
         return true;
     }
 
@@ -74,14 +75,14 @@ static bool mapUid(void *k, void *v, void *c) {
     struct Schedule *s = (struct Schedule *) v;
 
     hashmapAddList(timetable->uid, s->id.uid, s);
-    
+
     return true;
 }
 
 void tt_schedule_load_uid() {
     hashmapForEach(timetable->schedules, mapUid, NULL);
     logconsole(TT_LOG_FORMAT_D, "UID", hashmapSize(timetable->uid));
-    
+
     logconsole("Sorting...");
     hashmapForEach(timetable->uid, sortSchedules, NULL);
 }
@@ -97,9 +98,6 @@ int tt_schedule_load(char *filename) {
     logconsole(TT_LOG_FORMAT_D, "Schedules", hashmapSize(timetable->schedules));
 
     tt_schedule_load_uid();
-
-    /*
-     */
 
     return EXIT_SUCCESS;
 }

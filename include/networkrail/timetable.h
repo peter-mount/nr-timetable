@@ -83,6 +83,8 @@ extern "C" {
         Hashmap *assoc;
         // Schedule data
         Hashmap *schedules;
+        // ScheduleEntries
+        Hashmap *scheduleEntry;
 
         // =======================
         // Used in meta data to hold common strings, platform's etc
