@@ -37,7 +37,6 @@
  * text for each location etc.
  * 
  */
-
 void tt_get_schedules_by_uid(CharBuffer *b, const char *uri) {
     // writable copy of uri
     char uid[strlen(uri) + 1];
@@ -69,16 +68,17 @@ void tt_get_schedules_by_uid(CharBuffer *b, const char *uri) {
     int r = EXIT_SUCCESS;
 
     if (datePresent) {
-        // Filter only schedules containing the specified date and we want
-        // just the first entry found.
-        r = tt_filter_schedules_runson_date(stream, &t);
+        // Filter only schedules containing the specified date
+        if (!r) r = tt_filter_schedules_runson_date(stream, &t);
+        
+        // We want just 1 result
         if (!r) r = stream_findFirst(stream);
     }
 
     // Now collect using the schedule result collector and run
     if (!r) r = tt_schedule_result_full(stream, b);
 
-    //stream_debug(stream);
+    stream_debug(stream);
     if (!r)
         stream_run(stream, NULL);
     else

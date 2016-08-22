@@ -46,10 +46,6 @@
  * 
  */
 
-static void forEach(StreamData *d) {
-    //logconsole("%16lx", d ? stream_getVal(d) : 0);
-}
-
 void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
 
     char tmp[strlen(uri) + 1];
@@ -95,8 +91,10 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
 
     int r = 0; //EXIT_FAILURE;
 
-    if (!r)
-        r = stream_forEach(stream, forEach);
+    if(!r) r = stream_notNull(stream);
+    
+    // Now collect using the schedule result collector and run
+    if (!r) r = tt_schedule_result_full(stream, b);
 
     //stream_debug(stream);
     if (!r)

@@ -135,10 +135,7 @@ int tt_schedule_index_stanox() {
 static bool writeIndex(void *k, void *v, void *c) {
     struct index *index = v;
     FILE *f = c;
-
-    // Not needed but enforce capacity limit
-    index->capacity = index->size;
-
+    
     // stanox & size int's
     fwrite(&index->stanox, sizeof (int), 2, f);
 

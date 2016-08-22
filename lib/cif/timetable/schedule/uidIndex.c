@@ -64,7 +64,7 @@ int tt_schedule_lookup_load(char *filename) {
     hashmapRead(timetable->schedId, read, f);
     fclose(f);
 
-    logconsole(TT_LOG_FORMAT_D, "Stanox-Schedule", hashmapSize(timetable->schedId));
+    logconsole(TT_LOG_FORMAT_D, "UID", hashmapSize(timetable->schedId));
 
     return EXIT_SUCCESS;
 }

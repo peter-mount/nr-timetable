@@ -136,7 +136,9 @@ extern "C" {
     extern struct TTTiploc *tt_getTiploc(struct TimeTable *t, char *tiploc);
 
     extern void tt_index();
-
+//    extern void tt_schedule_load_uid();
+//    extern void tt_schedule_sort();
+    
     /*
      * The idmap/txtmap constant string pool.
      * 

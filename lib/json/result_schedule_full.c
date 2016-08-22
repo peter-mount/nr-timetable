@@ -14,6 +14,7 @@
 
 struct ctx {
     CharBuffer *b;
+    bool init;
     bool sep;
     Hashmap *tiploc;
     Hashmap *activity;
@@ -31,10 +32,11 @@ static void freeCtx(struct ctx *ctx) {
     }
 }
 
-static void init(void *c) {
-    struct ctx *ctx = c;
-    if (ctx)
+static void init(struct ctx *ctx) {
+    if (!ctx->init) {
         charbuffer_append(ctx->b, "{\"schedule\":[");
+        ctx->init = true;
+    }
 }
 
 static void next(void *c, void *v) {
@@ -42,6 +44,8 @@ static void next(void *c, void *v) {
         struct ctx *ctx = c;
 
         struct Schedule *s = (struct Schedule *) v;
+
+        init(ctx);
 
         if (ctx->sep)
             charbuffer_add(ctx->b, ',');
@@ -61,6 +65,8 @@ static void next(void *c, void *v) {
 static void *finish(void *c) {
     if (c) {
         struct ctx *ctx = c;
+
+        init(ctx);
 
         charbuffer_append(ctx->b, "],\"tiploc\":{");
         if (ctx->tiploc)
@@ -88,12 +94,13 @@ static void *finish(void *c) {
 int tt_schedule_result_full(Stream *s, CharBuffer *b) {
     struct ctx *ctx = malloc(sizeof (struct ctx));
     if (ctx) {
+        memset(ctx, 0, sizeof (struct ctx));
         ctx->b = b;
         ctx->sep = false;
         ctx->tiploc = mapTiploc_new();
         ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);
 
-        if (!stream_collect(s, init, next, finish, ctx, NULL))
+        if (!stream_collect(s, NULL, next, finish, ctx, NULL))
             return EXIT_SUCCESS;
 
         freeCtx(ctx);

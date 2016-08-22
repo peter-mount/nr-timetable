@@ -70,34 +70,20 @@ static bool read(Hashmap *m, FILE *f) {
     return false;
 }
 
-static bool indexSchedule(void *k, void *v, void *c) {
+static bool mapUid(void *k, void *v, void *c) {
     struct Schedule *s = (struct Schedule *) v;
 
-    // schedule uuid
     hashmapAddList(timetable->uid, s->id.uid, s);
-
-    // Index of schedules per stanox
-    for (int i = 0; i < s->numEntries; i++) {
-        struct ScheduleEntry *e = &s->entries[i];
-
-        int tiploc = e->tiploc;
-        struct TTTiploc *t = hashmapGet(timetable->idTiploc, &tiploc);
-
-        if (t && t->stanox > 0) {
-            int *stanox = malloc(sizeof (int));
-            *stanox = t->stanox;
-
-            List *l = hashmapAddList(timetable->schedStanox, &stanox, s);
-
-            /*
-             * If size is 1 then we are using *stanox as the key
-             * so when >1 we can free it as it's not in use
-             */
-            if (list_size(l) > 1)
-                free(stanox);
-        }
-    }
+    
     return true;
+}
+
+void tt_schedule_load_uid() {
+    hashmapForEach(timetable->schedules, mapUid, NULL);
+    logconsole(TT_LOG_FORMAT_D, "UID", hashmapSize(timetable->uid));
+    
+    logconsole("Sorting...");
+    hashmapForEach(timetable->uid, sortSchedules, NULL);
 }
 
 int tt_schedule_load(char *filename) {
@@ -110,11 +96,10 @@ int tt_schedule_load(char *filename) {
 
     logconsole(TT_LOG_FORMAT_D, "Schedules", hashmapSize(timetable->schedules));
 
-    hashmapForEach(timetable->schedules, indexSchedule, NULL);
-    logconsole(TT_LOG_FORMAT_D, "UID", hashmapSize(timetable->uid));
+    tt_schedule_load_uid();
 
-    logconsole("Sorting UID's");
-    hashmapForEach(timetable->uid, sortSchedules, NULL);
+    /*
+     */
 
     return EXIT_SUCCESS;
 }
