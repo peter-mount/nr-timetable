@@ -48,13 +48,14 @@ void tt_tiploc_index() {
 }
 
 int tt_tiploc_read(char *filename) {
+    logconsole(TT_LOG_FORMAT_S,"Tiplocs",filename);
     int fsock = open(filename, O_RDONLY);
     if (fsock == -1) {
         logconsole("Cannot open %s", filename);
         return EXIT_FAILURE;
     }
 
-    hashmapReadMemMap(timetable->idTiploc, readTiploc, fsock);
+    hashmapReadMemMap(timetable->loc, readTiploc, fsock);
     tt_tiploc_index();
 
     return EXIT_SUCCESS;
