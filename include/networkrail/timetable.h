@@ -36,12 +36,16 @@ extern "C" {
     // format used in logging number of entries when loading, e.g.
     //logconsole(TT_LOG_FORMAT_D, "Schedules", hashmapSize(m));
 
-#define TT_LOG_FORMAT_D "%10s %6d"
+#define TT_LOG_FORMAT_P "%16s "
+#define TT_LOG_FORMAT_D TT_LOG_FORMAT_P "%10d"
+#define TT_LOG_FORMAT_S TT_LOG_FORMAT_P "%s"
 
     // The various file suffixes
 #define TT_SUFFIX_META      ".mta"
 #define TT_SUFFIX_TIPLOC    ".tpl"
 #define TT_SUFFIX_SCHEDULES ".sch"
+#define TT_SUFFIX_INDEX     ".stx"
+#define TT_SUFFIX_UID_INDEX ".uid"
 
     struct TTHeader {
         // Time of import
@@ -100,6 +104,13 @@ extern "C" {
 
         // Schedule UID. Entries are lists of entries
         Hashmap *uid;
+        
+        // Schedules at each stanox
+        Hashmap *schedStanox;
+        // scheduleUid used by schedStanox to reduce index size
+        Hashmap *schedId;
+        // Used only when creating schedStanox/schedId
+        Hashmap *idSched;
     };
 
     extern struct TimeTable *timetable;

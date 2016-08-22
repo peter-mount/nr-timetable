@@ -48,14 +48,25 @@ int timetable_save(struct TimeTable *tt, char *filename) {
     // Save tiploc data
     if (!ret) {
         db = genurl(filename, TT_SUFFIX_TIPLOC);
-        ret = tt_tiploc_write(tt->loc, db);
+        ret = tt_tiploc_write(db);
         free(db);
     }
 
     if (!ret) {
         db = genurl(filename, TT_SUFFIX_SCHEDULES);
-        logconsole("Writing schedule to %s", db);
-        ret = tt_schedule_write(tt->schedules, db);
+        ret = tt_schedule_write(db);
+        free(db);
+    }
+
+    if (!ret) {
+        db = genurl(filename, TT_SUFFIX_INDEX);
+        ret = tt_write_index_stanox(db);
+        free(db);
+    }
+
+    if (!ret) {
+        db = genurl(filename, TT_SUFFIX_UID_INDEX);
+        ret = tt_schedule_lookup_write(db);
         free(db);
     }
 

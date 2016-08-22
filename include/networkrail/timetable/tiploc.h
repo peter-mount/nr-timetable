@@ -31,8 +31,9 @@ extern "C" {
         char nlcdesc[17];
     };
 
-    extern int tt_tiploc_read(Hashmap *m, char *filename);
-    extern int tt_tiploc_write(Hashmap *m, char *filename);
+    extern void tt_tiploc_index();
+    extern int tt_tiploc_read(char *filename);
+    extern int tt_tiploc_write(char *filename);
 
     extern void tt_find_tiploc(CharBuffer *b, const char *tiploc);
     extern void tt_find_tiploc_by_crs(CharBuffer *b, const char *crs);

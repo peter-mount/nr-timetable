@@ -114,9 +114,15 @@ extern "C" {
     extern bool hashmapScheduleIdEquals(void *key_a, void *key_b);
     extern int hashmapScheduleIdHash(void *str);
     extern int tt_parse_scheduleId(struct CIFParser *parser, struct ScheduleId *id);
-    extern int tt_schedule_write(Hashmap *m, char *filename);
-    extern int tt_schedule_load(char *filename);
 
+    extern int tt_schedule_write(char *filename);
+    extern int tt_write_index_stanox(char *);
+    extern int tt_schedule_lookup_write(char *);
+    
+    extern int tt_schedule_load(char *filename);
+    extern int tt_schedule_index_load(char *);
+    extern int tt_schedule_lookup_load(char *);
+    
     extern void tt_append_schedule(CharBuffer *b, struct Schedule *e);
     extern void tt_append_schedule_node(CharBuffer *b, Node *n);
 
@@ -128,8 +134,13 @@ extern "C" {
     extern void mapTiploc_mapSchedule(Hashmap *m, struct Schedule *s);
     extern void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e);
 
+    extern int tt_schedule_index_stanox();
+    extern int tt_write_index_stanox(char *);
+    
     // Stream collector to render schedules into a charbuffer
-    extern int tt_schedule_result(Stream *s, CharBuffer *);
+    extern int tt_schedule_result_full(Stream *s, CharBuffer *);
+    // Stream collector to render schedule index at a location into a charbuffer
+    extern int tt_schedule_result_index(Stream *s, CharBuffer *);
 
     // rest services
     extern void tt_get_schedules_by_stanox(CharBuffer *, const char *);

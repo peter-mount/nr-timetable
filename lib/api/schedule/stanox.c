@@ -46,6 +46,10 @@
  * 
  */
 
+static void forEach(StreamData *d) {
+    logconsole("%16lx", d ? stream_getVal(d) : 0);
+}
+
 void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
 
     char tmp[strlen(uri) + 1];
@@ -88,8 +92,12 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
     if (!stream)
         return;
 
-    int r = EXIT_FAILURE;
+    int r = 0; //EXIT_FAILURE;
 
+    if (!r)
+        r = stream_forEach(stream, forEach);
+
+    stream_debug(stream);
     if (!r)
         stream_run(stream, NULL);
     else

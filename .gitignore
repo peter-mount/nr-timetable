@@ -56,3 +56,5 @@ config.cache
 
 /build/
 /include/networkrail/corpus/version.h
+
+core

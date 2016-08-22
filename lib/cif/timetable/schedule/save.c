@@ -27,7 +27,7 @@ static bool writeSchedule(void *k, void *v, void *c) {
     return true;
 }
 
-int tt_schedule_write(Hashmap *m, char *filename) {
+int tt_schedule_write(char *filename) {
 
     logconsole("Writing schedule to %s", filename);
 
@@ -37,7 +37,7 @@ int tt_schedule_write(Hashmap *m, char *filename) {
     if (!f)
         return EXIT_FAILURE;
 
-    hashmapWrite(m, writeSchedule, f);
+    hashmapWrite(timetable->schedules, writeSchedule, f);
     fclose(f);
     return EXIT_SUCCESS;
 }

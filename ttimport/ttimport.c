@@ -38,7 +38,7 @@ static int importCIF(const char *filename) {
         return EXIT_FAILURE;
     }
 
-    logconsole("Importing %s", filename);
+    logconsole(TT_LOG_FORMAT_S, "Importing", filename);
     int rc = cif_parseFile(&timetable->parser, fsock);
 
     close(fsock);
@@ -48,7 +48,7 @@ static int importCIF(const char *filename) {
         return EXIT_FAILURE;
     }
 
-    logconsole("Import complete");
+    //logconsole("Import complete");
     return EXIT_SUCCESS;
 }
 
@@ -113,7 +113,12 @@ int main(int argc, char** argv) {
         n = list_getNext(n);
     }
 
-    // Index & write to disk here
+    // Create indices
+    logconsole("Generating indices");
+    tt_tiploc_index();
+    tt_schedule_index_stanox();
+
+    // Persist to disk
     timetable_save(timetable, newdb);
 
     logconsole("New timetables complete");

@@ -20,6 +20,12 @@ struct TimeTable *timetable_new() {
     tt->stanoxTiploc = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
     
     tt->uid = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
+    // Map of schedules per stanox
+    tt->schedStanox = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
+    // used by schedStanox, id->ScheduleId
+    tt->schedId = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
+    // used when creating schedId & schedStanox
+    tt->idSched = hashmapCreate(100, hashmapScheduleIdHash, hashmapScheduleIdEquals);
     
     // see idmap.c
     tt->idmap = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);

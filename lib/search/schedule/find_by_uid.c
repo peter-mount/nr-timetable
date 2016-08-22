@@ -21,14 +21,25 @@
  */
 Stream *tt_search_schedules_by_uid(char *uid) {
     Stream *stream = stream_of(uid, NULL);
-    
-    hashmapGetMapper(stream, timetable->uid);
-    stream_notNull(stream);
+    if (!stream)
+        return NULL;
+
+    int r = hashmapGetMapper(stream, timetable->uid);
+    if (!r)
+        r = stream_notNull(stream);
 
     // flatMap the list to nodes
-    stream_flatMap(stream, list_flatMap, NULL);
+    if (!r)
+        r = list_flatMap(stream);
 
     // Get Schedule from node->name
-    list_map_node_name(stream);
+    if (!r)
+        r = list_map_node_name(stream);
+
+    if (r) {
+        stream_free(stream);
+        return NULL;
+    }
+
     return stream;
 }

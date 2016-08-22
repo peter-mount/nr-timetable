@@ -25,8 +25,11 @@ OBJS += cif/timetable/records/aa.o \
 	cif/timetable/records/ti_tu.o \
 	cif/timetable/records/zz.o
 
-OBJS += cif/timetable/schedule/read.o \
-	cif/timetable/schedule/save.o
+OBJS += cif/timetable/schedule/index.o \
+	cif/timetable/schedule/read.o \
+	cif/timetable/schedule/readIndex.o \
+	cif/timetable/schedule/save.o \
+	cif/timetable/schedule/uidIndex.o
 
 OBJS += cif/timetable/tiploc/read.o \
 	cif/timetable/tiploc/save.o
@@ -63,7 +66,8 @@ OBJS += api/schedule/stanox.o \
 OBJS += json/append_entry.o \
 	json/append_schedule.o \
 	json/append_time.o \
-	json/result.o
+	json/result_schedule_full.o \
+	json/result_schedule_index.o
 
 # Filters
 OBJS +=	filter/schedule/contains_date.o \

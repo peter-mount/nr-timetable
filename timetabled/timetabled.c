@@ -83,13 +83,25 @@ static int opendb() {
     fclose(f);
 
     db = genurl(database, TT_SUFFIX_TIPLOC);
-    int ret = tt_tiploc_read(timetable->loc, db);
+    int ret = tt_tiploc_read(db);
     free(db);
     if (ret)
         return EXIT_FAILURE;
 
     db = genurl(database, TT_SUFFIX_SCHEDULES);
     ret = tt_schedule_load(db);
+    free(db);
+    if (ret)
+        return EXIT_FAILURE;
+
+    db = genurl(database, TT_SUFFIX_INDEX);
+    ret = tt_schedule_index_load(db);
+    free(db);
+    if (ret)
+        return EXIT_FAILURE;
+
+    db = genurl(database, TT_SUFFIX_UID_INDEX);
+    ret = tt_schedule_lookup_load(db);
     free(db);
     if (ret)
         return EXIT_FAILURE;

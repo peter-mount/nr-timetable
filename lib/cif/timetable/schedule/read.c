@@ -76,6 +76,27 @@ static bool indexSchedule(void *k, void *v, void *c) {
     // schedule uuid
     hashmapAddList(timetable->uid, s->id.uid, s);
 
+    // Index of schedules per stanox
+    for (int i = 0; i < s->numEntries; i++) {
+        struct ScheduleEntry *e = &s->entries[i];
+
+        int tiploc = e->tiploc;
+        struct TTTiploc *t = hashmapGet(timetable->idTiploc, &tiploc);
+
+        if (t && t->stanox > 0) {
+            int *stanox = malloc(sizeof (int));
+            *stanox = t->stanox;
+
+            List *l = hashmapAddList(timetable->schedStanox, &stanox, s);
+
+            /*
+             * If size is 1 then we are using *stanox as the key
+             * so when >1 we can free it as it's not in use
+             */
+            if (list_size(l) > 1)
+                free(stanox);
+        }
+    }
     return true;
 }
 

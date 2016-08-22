@@ -73,16 +73,11 @@ static void *finish(void *c) {
 }
 
 /*
- * Stream collector that will add Schedules to the standard result json.
+ * Stream collector that will add a schedule index json.
  * 
- * CharBuffer *b;
- * Stream *stream;
- * tt_schedule_result(stream);
- * stream_run(stream, b);
- * 
- * where b is the charbuffer to append the result json to.
+ * This lists the schedule, date and time at a specific location.
  */
-int tt_schedule_result(Stream *s, CharBuffer *b) {
+int tt_schedule_result_index(Stream *s, CharBuffer *b) {
     struct ctx *ctx = malloc(sizeof (struct ctx));
     if (ctx) {
         ctx->b = b;

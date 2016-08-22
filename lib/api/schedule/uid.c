@@ -76,8 +76,9 @@ void tt_get_schedules_by_uid(CharBuffer *b, const char *uri) {
     }
 
     // Now collect using the schedule result collector and run
-    if (!r) r = tt_schedule_result(stream, b);
+    if (!r) r = tt_schedule_result_full(stream, b);
 
+    //stream_debug(stream);
     if (!r)
         stream_run(stream, NULL);
     else

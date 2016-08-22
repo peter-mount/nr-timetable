@@ -39,19 +39,23 @@ static bool indexTiploc(void *k, void *v, void *c) {
     return true;
 }
 
-int tt_tiploc_read(Hashmap *m, char *filename) {
+void tt_tiploc_index() {
+    logconsole(TT_LOG_FORMAT_D, "Tiplocs", hashmapSize(timetable->loc));
+
+    hashmapForEach(timetable->loc, indexTiploc, NULL);
+    logconsole(TT_LOG_FORMAT_D, "CRS/3alpha", hashmapSize(timetable->crsTiploc));
+    logconsole(TT_LOG_FORMAT_D, "Stanox", hashmapSize(timetable->stanoxTiploc));
+}
+
+int tt_tiploc_read(char *filename) {
     int fsock = open(filename, O_RDONLY);
     if (fsock == -1) {
         logconsole("Cannot open %s", filename);
         return EXIT_FAILURE;
     }
 
-    hashmapReadMemMap(m, readTiploc, fsock);
-    logconsole(TT_LOG_FORMAT_D, "Tiplocs", hashmapSize(m));
-
-    hashmapForEach(timetable->loc, indexTiploc, NULL);
-    logconsole(TT_LOG_FORMAT_D, "CRS/3alpha", hashmapSize(timetable->crsTiploc));
-    logconsole(TT_LOG_FORMAT_D, "Stanox", hashmapSize(timetable->stanoxTiploc));
+    hashmapReadMemMap(timetable->idTiploc, readTiploc, fsock);
+    tt_tiploc_index();
 
     return EXIT_SUCCESS;
 }

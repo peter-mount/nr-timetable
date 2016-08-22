@@ -45,10 +45,10 @@ void purgeExpiredSchedules(struct TimeTable *t) {
     // Get the deadline of midnight (00:00) of current day)
     struct tm tm;
     time(&ctx.deadline);
-    localtime_r(&ctx.deadline, &tm);
+    gmtime_r(&ctx.deadline, &tm);
     tm.tm_hour = tm.tm_min = tm.tm_sec = 0;
     ctx.deadline = mktime(&tm);
 
     hashmapForEach(t->schedules, callback, &ctx);
-    logconsole("Removed %d expired schedules", ctx.removed);
+    logconsole(TT_LOG_FORMAT_D, "Expired", ctx.removed);
 }

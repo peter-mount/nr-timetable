@@ -25,9 +25,9 @@ void tt_log_header(char *task) {
     localtime_r(&timetable->header.userEnd, &tm);
     strftime(tm3, 30, "%Y-%m-%d", &tm);
 
-    logconsole("%s %s exported %s", task, timetable->header.fileRef, tm1);
+    logconsole(TT_LOG_FORMAT_P "%s exported %s", task, timetable->header.fileRef, tm1);
 
-    logconsole("Schedules cover dates %s to %s", tm2, tm3);
+    logconsole(TT_LOG_FORMAT_P "%s to %s", "Period", tm2, tm3);
 }
 
 int tt_parse_header(struct CIFParser *parser) {

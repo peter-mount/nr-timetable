@@ -12,11 +12,12 @@ int tt_parse_trailer(struct CIFParser *parser) {
     // Complete any previous schedule
     tt_parse_complete_schedule(p);
 
-    logconsole("Read %d lines, %d bytes", parser->lineno, parser->fileLength);
+    logconsole(TT_LOG_FORMAT_D,"Lines read", parser->lineno);
+    logconsole(TT_LOG_FORMAT_D,"Bytes read", parser->fileLength);
 
-    logconsole("      Tiplocs %d", hashmapSize(p->loc));
-    logconsole(" Associations %d", hashmapSize(p->assoc));
-    logconsole("    Schedules %d", hashmapSize(p->schedules));
+    logconsole(TT_LOG_FORMAT_D,"Tiplocs", hashmapSize(p->loc));
+    logconsole(TT_LOG_FORMAT_D,"Associations", hashmapSize(p->assoc));
+    logconsole(TT_LOG_FORMAT_D,"Schedules", hashmapSize(p->schedules));
 
     return EXIT_SUCCESS;
 }
