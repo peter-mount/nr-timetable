@@ -93,7 +93,7 @@ int tt_schedule_result_full(Stream *s, CharBuffer *b) {
         ctx->tiploc = mapTiploc_new();
         ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);
 
-        if (!stream_collect(s, init, next, finish, ctx, free))
+        if (!stream_collect(s, init, next, finish, ctx, NULL))
             return EXIT_SUCCESS;
 
         freeCtx(ctx);
