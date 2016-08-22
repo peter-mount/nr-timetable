@@ -24,7 +24,6 @@ static void supplier(StreamData *d) {
     if (ctx && ctx->remain > 0) {
         ctx->remain--;
         stream_setVal(d, ctx->p++, NULL);
-        logconsole("rem %d val %d", ctx->remain, stream_getVal(d));
         stream_next(d);
     } else
         stream_terminate(d);

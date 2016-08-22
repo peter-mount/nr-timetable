@@ -43,3 +43,15 @@ Stream *tt_search_schedules_by_uid(char *uid) {
 
     return stream;
 }
+
+static Stream *flatMap(StreamData *d, void *c) {
+    char *uid = stream_getVal(d);
+    return tt_search_schedules_by_uid(uid);
+}
+
+/*
+ * Enable tt_search_schedules_by_uid to also be used in a stream
+ */
+int tt_flatMap_schedules_by_uid(Stream *s) {
+    return stream_flatMap(s, flatMap, NULL);
+}

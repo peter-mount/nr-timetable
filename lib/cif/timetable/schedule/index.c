@@ -44,8 +44,8 @@ static int getId(struct ScheduleId *id) {
         }
 
         *sid = hashmapSize(timetable->idSched);
-        hashmapPut(timetable->idSched, id, sid);
-        hashmapPut(timetable->schedId, sid, id);
+        hashmapPut(timetable->idSched, id->uid, sid);
+        hashmapPut(timetable->schedId, sid, id->uid);
     }
 
     return *sid;

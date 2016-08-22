@@ -17,24 +17,15 @@
 #include <area51/log.h>
 #include <area51/stream.h>
 
-extern int tt_stanox_schedule_flatMap(Stream *);
-
-static void dbb(StreamData *d) {
-    logconsole("Value %lx", stream_getVal(d));
-    stream_next(d);
-}
-
-static int db(Stream *s) {
-    return stream_invoke(s, dbb, NULL, NULL);
-}
 /*
- * Creates a stream that returns all schedules for a specific stanox
+ * Creates a stream that returns all schedules that run through a specific stanox
  */
 Stream *tt_search_schedules_by_stanox(int stanox) {
     int *v = malloc(sizeof (int));
     if (!v)
         return NULL;
 
+    // Stream of stanox->scheduleId (int)
     *v = stanox;
     Stream *stream = stream_of(v, free);
     if (!stream) {
@@ -42,29 +33,25 @@ Stream *tt_search_schedules_by_stanox(int stanox) {
         return NULL;
     }
 
+    // Lookup in index
     int r = hashmapGetMapper(stream, timetable->schedStanox);
-
-    db(stream);
 
     if (!r)
         r = stream_notNull(stream);
 
-    db(stream);
-
-    // flatMap the list to give us a stream of streams at this location
+    // flatMap so we now have stream of int scheduleID's
     if (!r)
-        //r = list_flatMap(stream);
         r = tt_stanox_schedule_flatMap(stream);
 
-    db(stream);
-
-    if (!r)
-        r = list_map_node_name(stream);
-
-    db(stream);
-
+    // map to string schedule UID
     if (!r)
         r = hashmapGetMapper(stream, timetable->schedId);
+
+    // flatmap to stream of struct Schedule
+    if (!r)
+        r = tt_flatMap_schedules_by_uid(stream);
+
+    // At this point we now have a stream of struct Schedule at this location
 
     if (r) {
         stream_free(stream);

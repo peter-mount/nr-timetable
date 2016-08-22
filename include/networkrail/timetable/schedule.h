@@ -118,11 +118,11 @@ extern "C" {
     extern int tt_schedule_write(char *filename);
     extern int tt_write_index_stanox(char *);
     extern int tt_schedule_lookup_write(char *);
-    
+
     extern int tt_schedule_load(char *filename);
     extern int tt_schedule_index_load(char *);
     extern int tt_schedule_lookup_load(char *);
-    
+
     extern void tt_append_schedule(CharBuffer *b, struct Schedule *e);
     extern void tt_append_schedule_node(CharBuffer *b, Node *n);
 
@@ -136,7 +136,7 @@ extern "C" {
 
     extern int tt_schedule_index_stanox();
     extern int tt_write_index_stanox(char *);
-    
+
     // Stream collector to render schedules into a charbuffer
     extern int tt_schedule_result_full(Stream *s, CharBuffer *);
     // Stream collector to render schedule index at a location into a charbuffer
@@ -144,11 +144,15 @@ extern "C" {
 
     // rest services
     extern void tt_get_schedules_by_stanox(CharBuffer *, const char *);
+
     extern void tt_get_schedules_by_uid(CharBuffer *, const char *);
+    extern int tt_flatMap_schedules_by_uid(Stream *);
 
     // Searches
     extern Stream *tt_search_schedules_by_stanox(int);
     extern Stream *tt_search_schedules_by_uid(char *);
+
+    extern int tt_stanox_schedule_flatMap(Stream *);
 
     // Filters
     extern int tt_filter_schedules_runson_date(Stream *stream, time_t *t);

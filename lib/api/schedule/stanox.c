@@ -47,7 +47,7 @@
  */
 
 static void forEach(StreamData *d) {
-    logconsole("%16lx", d ? stream_getVal(d) : 0);
+    //logconsole("%16lx", d ? stream_getVal(d) : 0);
 }
 
 void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
@@ -88,6 +88,7 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
 
     logconsole("Date %04d-%02d-%02dT%02d hourPresent %d", tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, hourPresent);
 
+    // Get a Stream of struct Schedule that pass through this stanox
     Stream *stream = tt_search_schedules_by_stanox(stanox);
     if (!stream)
         return;
@@ -97,7 +98,7 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
     if (!r)
         r = stream_forEach(stream, forEach);
 
-    stream_debug(stream);
+    //stream_debug(stream);
     if (!r)
         stream_run(stream, NULL);
     else

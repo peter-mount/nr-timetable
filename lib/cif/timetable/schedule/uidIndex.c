@@ -15,15 +15,17 @@
 
 struct entry {
     int id;
-    struct ScheduleId sid;
+    char sid[TT_UID_LENGTH + 1];
 };
 
 static bool writeUID(void *k, void *v, void *c) {
     struct index *index = v;
     FILE *f = c;
 
-    fwrite(k, sizeof (int), 1, f);
-    fwrite(v, sizeof (struct ScheduleId), 1, f);
+    struct entry e;
+    e.id = *((int *) k);
+    memcpy(e.sid, v, TT_UID_LENGTH + 1);
+    fwrite(&e, sizeof (struct entry), 1, f);
 
     return true;
 }

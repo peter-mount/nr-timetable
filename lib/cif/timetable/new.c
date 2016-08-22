@@ -25,7 +25,8 @@ struct TimeTable *timetable_new() {
     // used by schedStanox, id->ScheduleId
     tt->schedId = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
     // used when creating schedId & schedStanox
-    tt->idSched = hashmapCreate(100, hashmapScheduleIdHash, hashmapScheduleIdEquals);
+    //tt->idSched = hashmapCreate(100, hashmapScheduleIdHash, hashmapScheduleIdEquals);
+    tt->idSched = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
     
     // see idmap.c
     tt->idmap = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
