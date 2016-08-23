@@ -143,15 +143,12 @@ int main(int argc, char** argv) {
 
     webserver_add_search_str("/tiploc/tiploc", tt_find_tiploc);
     webserver_add_search_int("/tiploc/stanox", tt_find_tiploc_by_stanox);
-    /*
-    webserver_add_search_int("/stanox", corpus_find_stanox);
-    webserver_add_search_int("/nlc", corpus_find_nlc);
-    webserver_add_search_int("/uic", corpus_find_uic);
-    webserver_add_search_str("/tiploc", corpus_find_tiploc);
-     */
 
     webserver_add_search_str("/schedule/uid", tt_get_schedules_by_uid);
     webserver_add_search_str("/schedule/stanox", tt_get_schedules_by_stanox);
+
+    webserver_add_static("/station", tt_api_station_index);
+    webserver_add_search_str("/station", tt_api_station);
 
     webserver_add_static("/status", tt_api_status);
 

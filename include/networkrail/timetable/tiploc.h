@@ -39,6 +39,8 @@ extern "C" {
     extern void tt_append_tiploc(CharBuffer *b, struct TTTiploc *tpl);
     extern void tt_append_tiploc_node(CharBuffer *b, Node *n);
 
+    extern int tt_filter_tiploc_crs(Stream *, time_t *);
+    
 #ifdef __cplusplus
 }
 #endif

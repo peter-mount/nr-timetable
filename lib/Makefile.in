@@ -4,6 +4,8 @@ MODULE = timetable
 OBJS =	api/tiploc/find_crs.o \
 	api/tiploc/find_stanox.o \
 	api/tiploc/find_tiploc.o \
+	api/station/index.o \
+	api/station/station.o \
 	api/status.o \
 	api/schedule/stanox.o \
 	api/schedule/uid.o

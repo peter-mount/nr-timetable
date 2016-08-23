@@ -14,9 +14,14 @@ extern "C" {
     extern void tt_get_schedules_by_stanox(CharBuffer *, const char *);
     extern void tt_get_schedules_by_uid(CharBuffer *, const char *);
 
+    // /station service
+    extern void tt_api_station(CharBuffer *, const char *);
+
+    extern void tt_api_station_index(CharBuffer *);
+
     // /status service
     extern void tt_api_status(CharBuffer *b);
-    
+
     // /tiploc/ services
     extern void tt_find_tiploc(CharBuffer *b, const char *tiploc);
     extern void tt_find_tiploc_by_crs(CharBuffer *b, const char *crs);
