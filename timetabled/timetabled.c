@@ -70,37 +70,49 @@ static int parseargs(int argc, char** argv) {
     return 0;
 }
 
+static char *getfile(char *database, char *suffix) {
+    char *db = genurl(database, suffix);
+    logconsole("Opening %s", db);
+    return db;
+}
+
 static int opendb() {
-    char *db = genurl(database, TT_SUFFIX_META);
-    FILE *f = fopen(db,"r");
+    char *db = getfile(database, TT_SUFFIX_META);
+    FILE *f = fopen(db, "r");
     free(db);
-    if(!f)
+    if (!f)
         return EXIT_FAILURE;
     fread(&timetable->header, sizeof (struct TTHeader), 1, f);
     tt_log_header("Timetable");
-   
+
     tt_idmap_read(f);
     fclose(f);
 
-    db = genurl(database, TT_SUFFIX_TIPLOC);
+    db = getfile(database, TT_SUFFIX_TIPLOC);
     int ret = tt_tiploc_read(db);
     free(db);
     if (ret)
         return EXIT_FAILURE;
 
-    db = genurl(database, TT_SUFFIX_SCHEDULES);
+    db = getfile(database, TT_SUFFIX_SCHEDULES);
     ret = tt_schedule_load(db);
     free(db);
     if (ret)
         return EXIT_FAILURE;
 
-    db = genurl(database, TT_SUFFIX_INDEX);
+    db = getfile(database, TT_SUFFIX_ENTRIES);
+    ret = tt_schedule_load_entries(db);
+    free(db);
+    if (ret)
+        return EXIT_FAILURE;
+
+    db = getfile(database, TT_SUFFIX_INDEX);
     ret = tt_schedule_index_load(db);
     free(db);
     if (ret)
         return EXIT_FAILURE;
 
-    db = genurl(database, TT_SUFFIX_UID_INDEX);
+    db = getfile(database, TT_SUFFIX_UID_INDEX);
     ret = tt_schedule_lookup_load(db);
     free(db);
     if (ret)
@@ -127,7 +139,7 @@ int main(int argc, char** argv) {
     // 3alpha & crs are the same thing
     webserver_add_search_str("/tiploc/3alpha", tt_find_tiploc_by_crs);
     webserver_add_search_str("/tiploc/crs", tt_find_tiploc_by_crs);
-    
+
     webserver_add_search_str("/tiploc/tiploc", tt_find_tiploc);
     webserver_add_search_int("/tiploc/stanox", tt_find_tiploc_by_stanox);
     /*
@@ -139,7 +151,7 @@ int main(int argc, char** argv) {
 
     webserver_add_search_str("/schedule/uid", tt_get_schedules_by_uid);
     webserver_add_search_str("/schedule/stanox", tt_get_schedules_by_stanox);
-    
+
     logconsole("Starting webserver on port %d", webserver.port);
     webserver_start();
 

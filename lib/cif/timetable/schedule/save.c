@@ -16,27 +16,12 @@
  */
 
 static bool writeSchedule(void *k, void *v, void *c) {
-    struct Schedule *s = (struct Schedule *) v;
-    FILE *f = (FILE *) c;
-
-    fwrite(s, sizeof (struct Schedule), 1, f);
-
-    if (s->numEntries > 0) {
-        struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &s->id);
-        if (entries == NULL) {
-            logconsole("Schedule without entries");
-            abort();
-        }
-        fwrite(entries, sizeof (struct ScheduleEntry), s->numEntries, f);
-    }
+    fwrite(v, sizeof (struct Schedule), 1, (FILE *) c);
 
     return true;
 }
 
 int tt_schedule_write(char *filename) {
-
-    logconsole("Writing schedule to %s", filename);
-
     backupFile(filename);
 
     FILE *f = fopen(filename, "w");
@@ -44,6 +29,37 @@ int tt_schedule_write(char *filename) {
         return EXIT_FAILURE;
 
     hashmapWrite(timetable->schedules, writeSchedule, f);
+    fclose(f);
+    return EXIT_SUCCESS;
+}
+
+static bool writeScheduleEntry(void *k, void *v, void *c) {
+    FILE *f = (FILE *) c;
+
+    struct Schedule *s = hashmapGet(timetable->scheduleSID, k);
+    if (s) {
+        int n = s->numEntries;
+        fwrite(k, sizeof (unsigned int), 1, f);
+        fwrite(&n, sizeof (int), 1, f);
+        fwrite(v, sizeof (struct ScheduleEntry), n, f);
+    } else {
+        int *sid = k;
+        logconsole("No schedule %ld", *sid);
+        //abort();
+    }
+
+    return true;
+}
+
+int tt_schedule_write_entries(char *filename) {
+
+    backupFile(filename);
+
+    FILE *f = fopen(filename, "w");
+    if (!f)
+        return EXIT_FAILURE;
+
+    hashmapWrite(timetable->scheduleEntry, writeScheduleEntry, f);
     fclose(f);
     return EXIT_SUCCESS;
 }

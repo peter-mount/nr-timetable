@@ -47,24 +47,35 @@ static bool sortSchedules(void *k, void *v, void *c) {
 // Callback to read in a schedule
 
 static bool read(Hashmap *m, FILE *f) {
-    // Now allocate the true entry of the right size and insert into the map
     struct Schedule *s = (struct Schedule *) malloc(sizeof (struct Schedule));
     if (s) {
         memset(s, 0, sizeof (struct Schedule));
         fread(s, sizeof (struct Schedule), 1, f);
         hashmapPut(m, &s->id, s);
+        return true;
+    }
+    return false;
+}
 
-        if (s->numEntries > 0) {
-            struct ScheduleEntry *entries = (struct ScheduleEntry *) malloc(s->numEntries * sizeof (struct ScheduleEntry));
-            if (!entries) {
-                free(s);
-                return false;
-            }
+static bool readEntry(Hashmap *m, FILE *f) {
+    // Now allocate the true entry of the right size and insert into the map
+    unsigned int *s = malloc(sizeof (unsigned int));
+    if (s) {
+        fread(s, sizeof (unsigned int), 1, f);
 
-            fread(entries, sizeof (struct ScheduleEntry), s->numEntries, f);
-            hashmapPut(timetable->scheduleEntry, &s->id, entries);
+        int n;
+        fread(&n, sizeof (int), 1, f);
+
+        struct ScheduleEntry *e = malloc(sizeof (struct ScheduleEntry)*n);
+        if (!e) {
+            free(s);
+            return false;
         }
-        
+
+        fread(e, sizeof (struct ScheduleEntry), n, f);
+
+        hashmapPut(m, s, e);
+
         return true;
     }
 
@@ -96,6 +107,21 @@ int tt_schedule_load(char *filename) {
     fclose(f);
 
     logconsole(TT_LOG_FORMAT_D, "Schedules", hashmapSize(timetable->schedules));
+
+    tt_schedule_load_uid();
+
+    return EXIT_SUCCESS;
+}
+
+int tt_schedule_load_entries(char *filename) {
+    FILE *f = fopen(filename, "r");
+    if (!f)
+        return EXIT_FAILURE;
+
+    hashmapRead(timetable->scheduleEntry, readEntry, f);
+    fclose(f);
+
+    logconsole(TT_LOG_FORMAT_D, "Entries", hashmapSize(timetable->scheduleEntry));
 
     tt_schedule_load_uid();
 

@@ -10,7 +10,7 @@
 #include <area51/log.h>
 
 bool hashmapScheduleIdEquals(void *key_a, void *key_b) {
-    return memcmp(key_a, key_b, sizeof (struct ScheduleId));
+    return memcmp(key_a, key_b, sizeof (struct ScheduleId)) == 0;
 }
 
 /* use djb hash unless we find it inadequate */

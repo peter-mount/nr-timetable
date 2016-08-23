@@ -76,9 +76,11 @@ extern "C" {
     };
 
     struct Schedule {
-        //Node node;
         struct ScheduleId id;
         time_t end;
+        
+        // Unique ID in database for the schedule
+        unsigned int sid;
 
         // 0000-9999
         unsigned int headcode : 14;
@@ -115,11 +117,13 @@ extern "C" {
     extern int hashmapScheduleIdHash(void *str);
     extern int tt_parse_scheduleId(struct CIFParser *parser, struct ScheduleId *id);
 
-    extern int tt_schedule_write(char *filename);
+    extern int tt_schedule_write(char *);
+    extern int tt_schedule_write_entries(char *);
     extern int tt_write_index_stanox(char *);
     extern int tt_schedule_lookup_write(char *);
 
-    extern int tt_schedule_load(char *filename);
+    extern int tt_schedule_load(char *);
+    extern int tt_schedule_load_entries(char *);
     extern int tt_schedule_index_load(char *);
     extern int tt_schedule_lookup_load(char *);
 

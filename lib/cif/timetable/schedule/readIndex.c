@@ -77,7 +77,6 @@ static bool read(Hashmap *m, FILE *f) {
 }
 
 int tt_schedule_index_load(char *filename) {
-    logconsole(TT_LOG_FORMAT_S, "Reading", filename);
 
     FILE *f = fopen(filename, "r");
     if (!f)

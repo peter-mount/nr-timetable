@@ -70,7 +70,6 @@ static bool writeText(void *k, void *v, void *c) {
 
 void tt_idmap_write(FILE *f) {
     hashmapWrite(timetable->idmap, writeText, f);
-    logconsole("Written %d constants", (int) hashmapSize(timetable->idmap));
 }
 
 static bool readText(Hashmap *m, FILE *f) {

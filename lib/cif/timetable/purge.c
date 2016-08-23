@@ -16,7 +16,12 @@ struct ctx {
 };
 
 void purgeExpiredSchedule(struct Schedule *s) {
-    free(s);
+    if (s) {
+        struct ScheduleEntry *e = hashmapRemove(timetable->scheduleEntry, &s->sid);
+        if (e)
+            free(e);
+        free(s);
+    }
 }
 
 static bool callback(void *key, void *value, void *context) {

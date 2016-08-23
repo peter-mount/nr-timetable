@@ -44,6 +44,7 @@ extern "C" {
 #define TT_SUFFIX_META      ".mta"
 #define TT_SUFFIX_TIPLOC    ".tpl"
 #define TT_SUFFIX_SCHEDULES ".sch"
+#define TT_SUFFIX_ENTRIES   ".ent"
 #define TT_SUFFIX_INDEX     ".stx"
 #define TT_SUFFIX_UID_INDEX ".uid"
 
@@ -73,6 +74,9 @@ extern "C" {
         // Common to all code
         // =======================
 
+        // Unique ID in database for the schedule
+        unsigned int sid;
+
         // The current schedule header
         struct TTHeader header;
 
@@ -85,6 +89,7 @@ extern "C" {
         Hashmap *schedules;
         // ScheduleEntries
         Hashmap *scheduleEntry;
+        Hashmap *scheduleSID;
 
         // =======================
         // Used in meta data to hold common strings, platform's etc

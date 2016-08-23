@@ -16,14 +16,14 @@ static bool writeTiploc(void *k, void *v, void *c) {
 
 int tt_tiploc_write(char *filename) {
 
-    logconsole("Writing tiplocs to %s", filename);
-
     backupFile(filename);
+    
     FILE *f = fopen(filename, "w");
     if (!f)
         return EXIT_FAILURE;
 
     hashmapWrite(timetable->loc, writeTiploc, f);
     fclose(f);
+    
     return EXIT_SUCCESS;
 }

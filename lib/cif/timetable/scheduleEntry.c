@@ -27,10 +27,15 @@ void tt_parse_complete_schedule(struct TimeTable *t) {
     if (t->curschedule) {
         t->curschedule->numEntries = t->entryCount;
         if (t->entryCount > 0) {
-            int s = sizeof (struct ScheduleEntry)*t->curschedule->numEntries;
-            struct ScheduleEntry *entries = (struct ScheduleEntry *) malloc(s);
+            unsigned int *sid = malloc(sizeof(unsigned int));
+            *sid = t->curschedule->sid;
+            
+            int s = sizeof (struct ScheduleEntry)*t->entryCount;
+            struct ScheduleEntry *entries = malloc(s);
             memcpy(entries, t->entries, s);
-            hashmapPut(timetable->scheduleEntry,&t->curschedule->id,entries);
+            
+            //hashmapPut(timetable->scheduleEntry,&t->curschedule->id,entries);
+            hashmapPut(timetable->scheduleEntry,sid,entries);
         }
         t->entryCount = 0;
     }

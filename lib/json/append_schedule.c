@@ -54,7 +54,7 @@ void json_append_datetime_ISO(CharBuffer *b, time_t *t) {
 
 void tt_append_schedule(CharBuffer *b, struct Schedule *e) {
     if (e) {
-        struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &e->id);
+        struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &e->sid);
         
         charbuffer_append(b, "{\"uid\":");
         json_append_str(b, e->id.uid);

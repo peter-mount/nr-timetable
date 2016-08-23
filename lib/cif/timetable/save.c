@@ -12,7 +12,6 @@
 extern struct TimeTable *timetable;
 
 static int saveMeta(char *db) {
-    logconsole("Writing metadata to %s", db);
     backupFile(db);
     FILE *f = fopen(db, "w");
     if (!f) return EXIT_FAILURE;
@@ -38,34 +37,44 @@ static int saveMeta(char *db) {
  * 
  */
 
-int timetable_save(struct TimeTable *tt, char *filename) {
-    logconsole("Writing timetable %s", filename);
+static char *genFilename(char *filename, char *suffix) {
+    char *db = genurl(filename, suffix);
+    logconsole("Writing %s", db);
+    return db;
+}
 
-    char *db = genurl(filename, TT_SUFFIX_META);
+int timetable_save(struct TimeTable *tt, char *filename) {
+
+    char *db = genFilename(filename, TT_SUFFIX_META);
     int ret = saveMeta(db);
     free(db);
 
-    // Save tiploc data
     if (!ret) {
-        db = genurl(filename, TT_SUFFIX_TIPLOC);
+        db = genFilename(filename, TT_SUFFIX_TIPLOC);
         ret = tt_tiploc_write(db);
         free(db);
     }
 
     if (!ret) {
-        db = genurl(filename, TT_SUFFIX_SCHEDULES);
+        db = genFilename(filename, TT_SUFFIX_SCHEDULES);
         ret = tt_schedule_write(db);
         free(db);
     }
 
     if (!ret) {
-        db = genurl(filename, TT_SUFFIX_INDEX);
+        db = genFilename(filename, TT_SUFFIX_ENTRIES);
+        ret = tt_schedule_write_entries(db);
+        free(db);
+    }
+
+    if (!ret) {
+        db = genFilename(filename, TT_SUFFIX_INDEX);
         ret = tt_write_index_stanox(db);
         free(db);
     }
 
     if (!ret) {
-        db = genurl(filename, TT_SUFFIX_UID_INDEX);
+        db = genFilename(filename, TT_SUFFIX_UID_INDEX);
         ret = tt_schedule_lookup_write(db);
         free(db);
     }

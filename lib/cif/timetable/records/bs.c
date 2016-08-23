@@ -24,9 +24,14 @@ static int insert(struct TimeTable *p, struct ScheduleId *sid) {
     if (!s)
         return EXIT_FAILURE;
 
+    memset(s, 0, sizeof (struct Schedule));
+
     // Copy the scheduleId and link the node name to the copy
     memcpy(&s->id, sid, sizeof (struct ScheduleId));
     s->numEntries = 0;
+
+    // Set the global schedule ID
+    s->sid = timetable->sid++;
 
     // Copy of buffer pointer
     char *b = p->parser.buf;
@@ -120,10 +125,12 @@ static int insert(struct TimeTable *p, struct ScheduleId *sid) {
     o += 4; // service branding - we don't use this
 
     // Add to collection and make it current
-    void *old = hashmapPut(p->schedules, &s->id, s);
+    struct Schedule *old = hashmapPut(p->schedules, &s->id, s);
     if (old) {
-        purgeExpiredSchedule((struct Schedule *) old);
+        purgeExpiredSchedule(old);
     }
+    
+    hashmapPut(p->scheduleSID,&s->sid,s);
 
     p->curschedule = s;
     return EXIT_SUCCESS;

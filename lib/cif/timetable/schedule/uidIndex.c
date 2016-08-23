@@ -31,7 +31,6 @@ static bool writeUID(void *k, void *v, void *c) {
 }
 
 int tt_schedule_lookup_write(char *filename) {
-    logconsole("Writing scheduleId index %s", filename);
 
     backupFile(filename);
 
@@ -41,6 +40,7 @@ int tt_schedule_lookup_write(char *filename) {
 
     hashmapWrite(timetable->schedId, writeUID, f);
     fclose(f);
+
     return EXIT_SUCCESS;
 }
 

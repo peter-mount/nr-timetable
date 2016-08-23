@@ -12,7 +12,8 @@ struct TimeTable *timetable_new() {
     tt->loc = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
     tt->assoc = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
     tt->schedules = hashmapCreate(100, hashmapScheduleIdHash, hashmapScheduleIdEquals);
-    tt->scheduleEntry = hashmapCreate(100, hashmapScheduleIdHash, hashmapScheduleIdEquals);
+    tt->scheduleEntry = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
+    tt->scheduleSID = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
 
     // api only
     

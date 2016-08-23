@@ -7,15 +7,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <area51/log.h>
-
-#include <networkrail/timetable.h>
-#include <networkrail/timetable/files.h>
+#include <string.h>
 #include <limits.h>
 #include <area51/string.h>
 #include <area51/file.h>
-
-#include <string.h>
+#include <area51/log.h>
+#include <networkrail/timetable.h>
+#include <networkrail/timetable/files.h>
 
 // Expanding array of ScheduleId's
 
@@ -34,7 +32,7 @@ struct stat {
 };
 
 static int getId(struct ScheduleId *id) {
-    int *sid = hashmapGet(timetable->idSched, id);
+    int *sid = hashmapGet(timetable->idSched, id->uid);
 
     if (!sid) {
         sid = malloc(sizeof (int));
@@ -73,23 +71,31 @@ static void add(struct index *index, int sid) {
     index->id[index->size++] = sid;
 }
 
+static struct index *getStanox(int stanox) {
+    struct index *index = hashmapGet(timetable->schedStanox, &stanox);
+    if (!index) {
+        index = malloc(sizeof (struct index));
+        if (!index)
+            return NULL;
+
+        index->stanox = stanox;
+        index->size = 0;
+        index->capacity = CAPACITY;
+        index->id = malloc(sizeof (int)*index->capacity);
+
+        hashmapPut(timetable->schedStanox, &index->stanox, index);
+    }
+    return index;
+}
+
 static void indexEntry(int sid, struct ScheduleEntry *e, struct stat *stats) {
     int tiploc = e->tiploc;
     struct TTTiploc *t = hashmapGet(timetable->idTiploc, &tiploc);
     if (t && t->stanox > 0) {
-        int stanox = t->stanox;
-        struct index *index = hashmapGet(timetable->schedStanox, &stanox);
-        if (!index) {
-            index = malloc(sizeof (struct index));
-            if (!index)
-                return;
-
-            index->stanox = stanox;
-            index->size = 0;
-            index->capacity = CAPACITY;
-            index->id = malloc(sizeof (int)*index->capacity);
-
-            hashmapPut(timetable->schedStanox, &index->stanox, index);
+        struct index *index = getStanox(t->stanox);
+        if(!index) {
+            logconsole("Failed to malloc stanox index %d",t->stanox);
+            abort();
         }
 
         // Remove duplicates (e.g. circular schedules)
@@ -113,9 +119,10 @@ static bool indexSchedule(void *k, void *v, void *c) {
 
     int sid = getId(&s->id);
 
-    struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry,&s->id);
-    for (int i = 0; i < s->numEntries; i++)
-        indexEntry(sid, &entries[i], (struct stat *) c);
+    struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &s->sid);
+    if (entries)
+        for (int i = 0; i < s->numEntries; i++)
+            indexEntry(sid, &entries[i], (struct stat *) c);
 
     return true;
 }
@@ -131,12 +138,14 @@ int tt_schedule_index_stanox() {
     logconsole(TT_LOG_FORMAT_D, "Stanox-Schedule", hashmapSize(timetable->schedStanox));
     logconsole(TT_LOG_FORMAT_D, "min/stanox", stats.min);
     logconsole(TT_LOG_FORMAT_D, "max/stanox", stats.max);
+    
+    return EXIT_SUCCESS;
 }
 
 static bool writeIndex(void *k, void *v, void *c) {
     struct index *index = v;
     FILE *f = c;
-    
+
     // stanox & size int's
     fwrite(&index->stanox, sizeof (int), 2, f);
 
@@ -147,7 +156,6 @@ static bool writeIndex(void *k, void *v, void *c) {
 }
 
 int tt_write_index_stanox(char *filename) {
-    logconsole("Writing stanox-schedule index %s", filename);
 
     backupFile(filename);
 
@@ -157,5 +165,6 @@ int tt_write_index_stanox(char *filename) {
 
     hashmapWrite(timetable->schedStanox, writeIndex, f);
     fclose(f);
+
     return EXIT_SUCCESS;
 }
