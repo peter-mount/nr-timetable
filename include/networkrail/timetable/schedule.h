@@ -63,7 +63,7 @@ extern "C" {
         // Platform at this location
         unsigned int platform : IDKEY_SIZE;
     };
-    
+
     // Retrieve a usable time from ScheduleTime, in seconds from midnight
     extern int scheduleTime_getTime(struct ScheduleTime *);
 
@@ -153,14 +153,14 @@ extern "C" {
 
     // Render ScheduleTime to JSON
     extern void tt_append_scheduleTime(CharBuffer *, struct ScheduleTime *);
-    
+
     // Stream collector to render schedules into a charbuffer
     extern int tt_schedule_result_full(Stream *s, CharBuffer *);
     // Stream collector to render schedule index at a location into a charbuffer
     extern int tt_schedule_result_index(Stream *s, CharBuffer *, int);
 
     // rest services
-    
+
     extern int tt_flatMap_schedules_by_uid(Stream *);
 
     // Searches
@@ -176,6 +176,7 @@ extern "C" {
     extern int tt_schedule_filter_runson_daysofweek(Stream *s, int dow);
     extern int tt_schedule_filter_runson_sameday(Stream *s, time_t *t);
 
+    extern int tt_filter_schedule_contains_stanox_hour(Stream *, time_t *, int);
 #ifdef __cplusplus
 }
 #endif

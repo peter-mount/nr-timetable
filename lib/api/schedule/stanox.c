@@ -99,6 +99,9 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
     // Filter to those that run on this date
     if (!r) r = tt_filter_schedules_runson_date(stream, &t);
 
+    if (hourPresent)
+        r = tt_filter_schedule_contains_stanox_hour(stream, &t, stanox);
+
     // Now collect using the schedule result collector and run
     if (!r) r = tt_schedule_result_index(stream, b, stanox);
 

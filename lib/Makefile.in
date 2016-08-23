@@ -60,6 +60,13 @@ OBJS += data/activity.o \
 	data/status.o \
 	data/trainCategory.o
 
+# Filters
+OBJS +=	filter/schedule/atStanoxAndHour.o \
+	filter/schedule/contains_date.o \
+	filter/schedule/dayRunning.o \
+	filter/schedule/runs_on_date.o \
+	filter/keyvalue_string.o
+
 # JSON result collectors
 OBJS += json/append_entry.o \
 	json/append_schedule.o \
@@ -67,12 +74,6 @@ OBJS += json/append_entry.o \
 	json/append_time.o \
 	json/result_schedule_full.o \
 	json/result_schedule_index.o
-
-# Filters
-OBJS +=	filter/schedule/contains_date.o \
-	filter/schedule/dayRunning.o \
-	filter/schedule/runs_on_date.o \
-	filter/keyvalue_string.o
 
 # searches
 OBJS += search/schedule/find_by_stanox.o \
