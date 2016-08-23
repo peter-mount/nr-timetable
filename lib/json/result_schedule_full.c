@@ -33,9 +33,9 @@ static void freeCtx(struct ctx *ctx) {
 }
 
 static void init(struct ctx *ctx) {
-    if (!ctx->init) {
+    if (ctx->init) {
         charbuffer_append(ctx->b, "{\"schedule\":[");
-        ctx->init = true;
+        ctx->init = false;
     }
 }
 
@@ -69,12 +69,10 @@ static void *finish(void *c) {
         init(ctx);
 
         charbuffer_append(ctx->b, "],\"tiploc\":{");
-        if (ctx->tiploc)
-            mapTiploc_appendIndex(ctx->b, ctx->tiploc);
+        mapTiploc_appendIndex(ctx->b, ctx->tiploc);
 
         charbuffer_append(ctx->b, "},\"activity\":{");
-        if (ctx->activity)
-            ttref_print_activity_index(ctx->b, ctx->activity);
+        ttref_print_activity_index(ctx->b, ctx->activity);
 
         charbuffer_append(ctx->b, "}}");
 
@@ -97,6 +95,7 @@ int tt_schedule_result_full(Stream *s, CharBuffer *b) {
         memset(ctx, 0, sizeof (struct ctx));
         ctx->b = b;
         ctx->sep = false;
+        ctx->init = true;
         ctx->tiploc = mapTiploc_new();
         ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);
 

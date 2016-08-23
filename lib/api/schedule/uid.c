@@ -72,7 +72,7 @@ void tt_get_schedules_by_uid(CharBuffer *b, const char *uri) {
         if (!r) r = tt_filter_schedules_runson_date(stream, &t);
         
         // We want just 1 result
-        if (!r) r = stream_findFirst(stream);
+        //if (!r) r = stream_findFirst(stream);
     }
 
     // Now collect using the schedule result collector and run

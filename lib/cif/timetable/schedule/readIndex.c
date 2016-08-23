@@ -12,7 +12,6 @@
 #include <area51/stream.h>
 #include <area51/string.h>
 #include <area51/comparator.h>
-#include <area51/trace.h>
 
 struct ctx {
     int remain;

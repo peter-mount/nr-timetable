@@ -4,15 +4,12 @@
 #include <area51/charbuffer.h>
 #include <area51/json.h>
 #include <area51/rest.h>
+#include <area51/list.h>
+#include <area51/log.h>
 #include <networkrail/timetable.h>
 #include <networkrail/timetable/lookupTable.h>
 #include <string.h>
 #include <ctype.h>
-
-#include <area51/list.h>
-#include <area51/log.h>
-
-extern struct TimeTable *timetable;
 
 void json_append_date_ISO(CharBuffer *b, time_t *t) {
     struct tm tm;
@@ -55,7 +52,7 @@ void json_append_datetime_ISO(CharBuffer *b, time_t *t) {
 void tt_append_schedule(CharBuffer *b, struct Schedule *e) {
     if (e) {
         struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &e->sid);
-        
+
         charbuffer_append(b, "{\"uid\":");
         json_append_str(b, e->id.uid);
 
@@ -114,7 +111,7 @@ void tt_append_schedule(CharBuffer *b, struct Schedule *e) {
 
         if (e->timingLoad) {
             charbuffer_append(b, ",\"timingLoad\":");
-            json_append_str(b, tt_idmap_get(e->trainId));
+            json_append_str(b, tt_idmap_get(e->timingLoad));
             //json_append_str(b, e->timingLoad);
         }
 

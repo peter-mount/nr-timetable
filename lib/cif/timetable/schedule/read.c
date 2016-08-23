@@ -124,7 +124,7 @@ void tt_schedule_load_uid() {
     hashmapForEach(timetable->schedules, mapUid, NULL);
     logconsole(TT_LOG_FORMAT_D, "UID", hashmapSize(timetable->uid));
 
-    logconsole("Sorting...");
+    logconsole("Sorting UID schedules...");
     hashmapForEach(timetable->uid, sortSchedules, NULL);
 }
 
@@ -159,7 +159,7 @@ int tt_schedule_load_entries(char *filename) {
     if (f == -1)
         return EXIT_FAILURE;
 
-    hashmapReadMemMap(timetable->schedules, readEntryMemMap, f);
+    hashmapReadMemMap(timetable->scheduleEntry, readEntryMemMap, f);
 #else
     FILE *f = fopen(filename, "r");
     if (!f)

@@ -11,8 +11,6 @@
 #include <area51/list.h>
 #include <area51/log.h>
 
-extern struct TimeTable *timetable;
-
 /**
  * Convenience method, appends a tiploc name field.
  * 

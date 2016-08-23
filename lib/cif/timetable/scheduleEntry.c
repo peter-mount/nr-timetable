@@ -34,7 +34,6 @@ void tt_parse_complete_schedule(struct TimeTable *t) {
             struct ScheduleEntry *entries = malloc(s);
             memcpy(entries, t->entries, s);
             
-            //hashmapPut(timetable->scheduleEntry,&t->curschedule->id,entries);
             hashmapPut(timetable->scheduleEntry,sid,entries);
         }
         t->entryCount = 0;
