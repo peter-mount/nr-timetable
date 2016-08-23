@@ -80,8 +80,6 @@ OBJS +=	filter/schedule/contains_date.o \
 # searches
 OBJS += search/schedule/find_by_stanox.o \
 	search/schedule/find_by_uid.o
-#	search/schedule/api/get_schedule_stanox.o \
-#	search/schedule/api/get_schedule.o \
 
 # tiplocs
 OBJS += search/tiploc/append_tiploc.o \

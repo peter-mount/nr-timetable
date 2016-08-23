@@ -10,8 +10,8 @@
 int scheduleTime_getTime(struct ScheduleTime *t) {
     // Note this works as there are no valid entries for Midnight (00:00:00)
     // within the timetable.
-    int tm = t->ptd * 60;
-    if (tm == 0) tm = t->pta * 60;
+    int tm = t->ptd;
+    if (tm == 0) tm = t->pta;
     if (tm == 0) tm = t->wtd;
     if (tm == 0) tm = t->wta;
     if (tm == 0) tm = t->wtp;

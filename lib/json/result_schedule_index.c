@@ -1,16 +1,19 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <area51/comparator.h>
 #include <area51/charbuffer.h>
 #include <area51/json.h>
-#include <area51/rest.h>
-#include <networkrail/timetable.h>
-#include <networkrail/timetable/lookupTable.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 #include <area51/list.h>
 #include <area51/log.h>
+#include <area51/rest.h>
 #include <area51/stream.h>
+#include <networkrail/timetable.h>
+#include <networkrail/timetable/lookupTable.h>
 
 // collector context data
 
@@ -37,11 +40,66 @@ struct ScheduleIndex {
  * This is used to sort the result into time order
  */
 
-static int comparator(Node *a, Node *b) {
+static int timeComparator(Node *a, Node *b) {
     int ta = scheduleTime_getTime(((struct ScheduleIndex *) a->value)->loc);
     int tb = scheduleTime_getTime(((struct ScheduleIndex *) b->value)->loc);
 
     return ta < tb ? -1 : ta > tb ? 1 : 0;
+}
+
+/*
+ * Comparator to sort by UID.
+ * 
+ * This is used to remove duplicates
+ */
+static char *STP = "CNOP";
+
+static int uidComparator(Node *a, Node *b) {
+    struct ScheduleIndex *ai = a->value;
+    struct ScheduleIndex *bi = b->value;
+
+    int r = strcmp(ai->id->uid, bi->id->uid);
+
+    // Sort by start
+    if (!r) r = comparator_time_t(&ai->id->start, &bi->id->start);
+
+    // If equal sort by STP
+    if (!r) r = comparator_long(
+            (long *) strchrnul(STP, ai->id->stpInd),
+            (long *) strchrnul(STP, ai->id->stpInd)
+            );
+
+    return r;
+}
+
+/*
+ * Remove any duplicate schedules. We do this by sorting against ScheduleID
+ * and then keeping the first one, which should match the order in STP above.
+ * 
+ * This shouldn't be necessary if the underlying stream filtered correctly
+ * but this is a second check, more so if like the stanox API we can't guarantee
+ * uniqueness until streams support this (which may be some time).
+ */
+static void removeDuplicates(List *list) {
+    // Sort into UID order
+    list_sort(list, uidComparator);
+
+    // Remove duplicates
+    char *uid = NULL;
+    Node *n = list_getHead(list);
+    while (list_isNode(n)) {
+        Node *next = list_getNext(n);
+
+        struct ScheduleIndex *idx = n->value;
+        if (uid && strcmp(uid, idx->id->uid) == 0) {
+            // This will remove & free n and the ScheduleIndex instance
+            list_remove(n);
+            node_free(n);
+        } else
+            uid = idx->id->uid;
+
+        n = next;
+    }
 }
 
 /*
@@ -137,8 +195,11 @@ static void *finish(void *c) {
     if (c) {
         struct ctx *ctx = c;
 
+        // First remove any duplicates
+        removeDuplicates(&ctx->list);
+
         // Sort result into time order
-        list_sort(&ctx->list, comparator);
+        list_sort(&ctx->list, timeComparator);
 
         // Write the schedules
         charbuffer_append(ctx->b, "{\"schedule\":[");
@@ -149,6 +210,7 @@ static void *finish(void *c) {
             if (!list_isHead(n))
                 charbuffer_add(ctx->b, ',');
 
+            // Schedule details
             charbuffer_append(ctx->b, "{\"uid\":");
             json_append_str(ctx->b, idx->id->uid);
 
@@ -156,9 +218,21 @@ static void *finish(void *c) {
             charbuffer_add(ctx->b, idx->id->stpInd);
             charbuffer_add(ctx->b, '"');
 
+            // Display time
+            append_hhmmss(ctx->b, "time", scheduleTime_getTime(idx->loc));
+
+            // Location details
             appendTpl(ctx, idx->origin, "origin");
             appendTpl(ctx, idx->dest, "dest");
             appendTpl(ctx, idx->loc, "loc");
+
+            // Type flags, only include if true, one of public, working or pass
+            if (idx->loc->pta || idx->loc->ptd)
+                charbuffer_append(ctx->b, ",\"public\":true");
+            else if (idx->loc->wta || idx->loc->wtd)
+                charbuffer_append(ctx->b, ",\"working\":true");
+            else
+                charbuffer_append(ctx->b, ",\"pass\":true");
 
             charbuffer_add(ctx->b, '}');
 
