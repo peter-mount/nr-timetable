@@ -43,7 +43,7 @@ static Stream *flatMap(StreamData *d, void *c) {
         return NULL;
     }
 
-    if (stream_invoke(s, supplier, ctx, free)) {
+    if (stream_invoke_r(s, supplier, ctx, free, "tt_stanox_schedule_flatMap")) {
         free(ctx);
         stream_free(s);
         return NULL;

@@ -18,7 +18,7 @@
 #include <area51/stream.h>
 
 /*
- * Creates a stream that returns all schedules that run through a specific stanox
+ * Creates a stream that returns all schedule uid's that run through a specific stanox
  */
 Stream *tt_search_schedules_by_stanox(int stanox) {
     int *v = malloc(sizeof (int));
@@ -36,22 +36,19 @@ Stream *tt_search_schedules_by_stanox(int stanox) {
     // Lookup in index
     int r = hashmapGetMapper(stream, timetable->schedStanox);
 
-    if (!r)
-        r = stream_notNull(stream);
+    if (!r) r = stream_notNull(stream);
 
     // flatMap so we now have stream of int scheduleID's
-    if (!r)
-        r = tt_stanox_schedule_flatMap(stream);
+    if (!r) r = tt_stanox_schedule_flatMap(stream);
 
     // map to string schedule UID
-    if (!r)
-        r = hashmapGetMapper(stream, timetable->schedId);
+    if (!r) r = hashmapGetMapper(stream, timetable->schedId);
 
-    // flatmap to stream of struct Schedule
-    if (!r)
-        r = tt_flatMap_schedules_by_uid(stream);
+    // flatmap to stream of string schedule uid
+    if (!r) r = tt_flatMap_schedules_by_uid(stream);
 
-    // At this point we now have a stream of struct Schedule at this location
+    // Remove anu duplicate id's
+    if (!r) r = stream_removeDuplicateStrings(stream);
 
     if (r) {
         stream_free(stream);

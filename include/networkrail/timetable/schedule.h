@@ -45,19 +45,12 @@ extern "C" {
     // Bits required to store time of day
 #define TIME_KEY_SIZE 17
 
-    // CIF User Spec v29 FINAL Page 20,21,23
-    // TODO P22 change en-route
+    // References a schedule entry in the timetable
+    // Used in both ScheduleEntry and ScheduleIndex
 
-    struct ScheduleEntry {
-        //Node node;
-        // "O", "I", "T" for Origin etc, i.e. LO, LI, LT
-        unsigned int type : 2;
+    struct ScheduleTime {
         // Tiploc (currently 10k) room for 500 entries before increasing this
         unsigned int tiploc : 14;
-        // Tiploc sequence (for circular routes), 0-9
-        unsigned int tiplocseq : 4;
-
-        // Public timetable in seconds of day
         unsigned int pta : TIME_KEY_SIZE;
         unsigned int ptd : TIME_KEY_SIZE;
         // Working timetable in seconds of day
@@ -67,8 +60,29 @@ extern "C" {
         //
         unsigned long activity : 36;
         unsigned int platform : IDKEY_SIZE;
-        unsigned long line : IDKEY_SIZE;
+    };
 
+    // An entry in the schedule index
+
+    struct ScheduleIndex {
+        struct ScheduleId id;
+        struct ScheduleTime origin;
+        struct ScheduleTime dest;
+        struct ScheduleTime loc;
+    };
+
+    // CIF User Spec v29 FINAL Page 20,21,23
+    // TODO P22 change en-route
+
+    struct ScheduleEntry {
+        //Node node;
+        // "O", "I", "T" for Origin etc, i.e. LO, LI, LT
+        unsigned int type : 2;
+        struct ScheduleTime time;
+        // Tiploc sequence (for circular routes), 0-9
+        unsigned int tiplocseq : 4;
+
+        unsigned long line : IDKEY_SIZE;
         unsigned long path : IDKEY_SIZE;
         unsigned long engAllow : IDKEY_SIZE;
         unsigned long pathAllow : IDKEY_SIZE;
@@ -78,7 +92,7 @@ extern "C" {
     struct Schedule {
         struct ScheduleId id;
         time_t end;
-        
+
         // Unique ID in database for the schedule
         unsigned int sid;
 
@@ -144,7 +158,7 @@ extern "C" {
     // Stream collector to render schedules into a charbuffer
     extern int tt_schedule_result_full(Stream *s, CharBuffer *);
     // Stream collector to render schedule index at a location into a charbuffer
-    extern int tt_schedule_result_index(Stream *s, CharBuffer *);
+    extern int tt_schedule_result_index(Stream *s, CharBuffer *, int);
 
     // rest services
     extern void tt_get_schedules_by_stanox(CharBuffer *, const char *);

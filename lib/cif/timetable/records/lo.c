@@ -28,7 +28,7 @@ int tt_parse_loc_origin(struct CIFParser *parser) {
     char tiploc[10];
     offset = cif_readString(parser->buf, offset, tiploc, 7);
     struct TTTiploc *tpl = tt_getTiploc(t, tiploc);
-    e->tiploc = tpl->id;
+    e->time.tiploc = tpl->id;
 
     // Tiploc suffix for circular routes
     int tm;
@@ -36,12 +36,12 @@ int tt_parse_loc_origin(struct CIFParser *parser) {
     e->tiplocseq = tm;
 
     offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &tm);
-    e->wtd = tm;
+    e->time.wtd = tm;
 
     offset = cif_readSeconds_hhmm_r(parser->buf, offset, &tm);
-    e->ptd = tm;
+    e->time.ptd = tm;
 
-    e->platform = tt_idmap_add_r(parser->buf, offset, 3);
+    e->time.platform = tt_idmap_add_r(parser->buf, offset, 3);
     offset += 3;
 
     e->line = tt_idmap_add_r(parser->buf, offset, 3);
@@ -53,7 +53,7 @@ int tt_parse_loc_origin(struct CIFParser *parser) {
     e->pathAllow = tt_idmap_add_r(parser->buf, offset, 2);
     offset += 2;
 
-    e->activity = ttref_parse_activity(&parser->buf[offset]);
+    e->time.activity = ttref_parse_activity(&parser->buf[offset]);
     offset += 12;
 
     e->perfAllow = tt_idmap_add_r(parser->buf, offset, 2);

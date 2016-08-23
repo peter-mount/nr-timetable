@@ -9,7 +9,7 @@
 #include <ctype.h>
 
 void mapTiploc_mapScheduleEntry(Hashmap *m, struct ScheduleEntry *e) {
-    mapTiploc_addTiploc(m, e->tiploc);
+    mapTiploc_addTiploc(m, e->time.tiploc);
 }
 
 /**

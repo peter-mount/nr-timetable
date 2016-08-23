@@ -89,7 +89,7 @@ static struct index *getStanox(int stanox) {
 }
 
 static void indexEntry(int sid, struct ScheduleEntry *e, struct stat *stats) {
-    int tiploc = e->tiploc;
+    int tiploc = e->time.tiploc;
     struct TTTiploc *t = hashmapGet(timetable->idTiploc, &tiploc);
     if (t && t->stanox > 0) {
         struct index *index = getStanox(t->stanox);

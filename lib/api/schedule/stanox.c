@@ -91,12 +91,18 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
 
     int r = 0; //EXIT_FAILURE;
 
-    if(!r) r = stream_notNull(stream);
-    
-    // Now collect using the schedule result collector and run
-    if (!r) r = tt_schedule_result_full(stream, b);
+    if (!r) r = stream_notNull(stream);
 
-    stream_debug(stream);
+    // Now convert into struct Schedule's
+    if (!r) r = tt_flatMap_schedules_by_uid(stream);
+
+    // Filter to those that run on this date
+    if (!r) r = tt_filter_schedules_runson_date(stream, &t);
+
+    // Now collect using the schedule result collector and run
+    if (!r) r = tt_schedule_result_index(stream, b, stanox);
+
+    //stream_debug(stream);
     if (!r)
         stream_run(stream, NULL);
     else
