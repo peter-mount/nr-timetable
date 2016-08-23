@@ -41,6 +41,8 @@ extern "C" {
 
     extern int tt_filter_tiploc_crs(Stream *, time_t *);
     
+    extern int tt_collect_tiploc(Stream *, void *(*)(List *, void *), void *, void (*)(void *));
+    
 #ifdef __cplusplus
 }
 #endif

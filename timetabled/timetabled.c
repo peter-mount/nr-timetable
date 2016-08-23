@@ -150,6 +150,8 @@ int main(int argc, char** argv) {
     webserver_add_static("/station", tt_api_station_index);
     webserver_add_search_str("/station", tt_api_station);
 
+    webserver_add_handler("/search", tt_api_station_search);
+
     webserver_add_static("/status", tt_api_status);
 
     logconsole("Starting webserver on port %d", webserver.port);

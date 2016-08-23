@@ -5,6 +5,7 @@ OBJS =	api/tiploc/find_crs.o \
 	api/tiploc/find_stanox.o \
 	api/tiploc/find_tiploc.o \
 	api/station/index.o \
+	api/station/search.o \
 	api/station/station.o \
 	api/status.o \
 	api/schedule/stanox.o \
@@ -43,6 +44,8 @@ OBJS += cif/timetable/schedule/index.o \
 
 OBJS += cif/timetable/tiploc/read.o \
 	cif/timetable/tiploc/save.o
+
+OBJS +=	collector/tiploc.o
 
 # Reference data defined within the CIF specs
 OBJS += data/activity.o \
