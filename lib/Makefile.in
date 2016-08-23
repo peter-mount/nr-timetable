@@ -1,9 +1,17 @@
 MODULE = timetable
 
-OBJS =  cif/files/add.o \
-	cif/files/scan.o
-	
-OBJS += cif/parser/free.o \
+# API endpoints
+OBJS =	api/tiploc/find_crs.o \
+	api/tiploc/find_stanox.o \
+	api/tiploc/find_tiploc.o \
+	api/status.o \
+	api/schedule/stanox.o \
+	api/schedule/uid.o
+
+# CIF
+OBJS +=	cif/files/add.o \
+	cif/files/scan.o \
+	cif/parser/free.o \
 	cif/parser/init.o \
 	cif/parser/parse.o \
 	cif/parser/parseFile.o
@@ -34,16 +42,6 @@ OBJS += cif/timetable/schedule/index.o \
 OBJS += cif/timetable/tiploc/read.o \
 	cif/timetable/tiploc/save.o
 
-OBJS += cif/uid/hash.o \
-	cif/uid/parse.o
-
-OBJS += cif/util/idmap.o \
-	cif/util/readDateTime.o \
-	cif/util/readInt.o \
-	cif/util/readString.o \
-	cif/util/readTime.o \
-	cif/util/scheduleTime_getTime.o
-
 # Reference data defined within the CIF specs
 OBJS += data/activity.o \
 	data/bankHoliday.o \
@@ -56,13 +54,6 @@ OBJS += data/activity.o \
 	data/sleepers.o \
 	data/status.o \
 	data/trainCategory.o
-
-# Seaarch Rest interfaces
-
-# API endpoints
-OBJS += api/status.o \
-	api/schedule/stanox.o \
-	api/schedule/uid.o
 
 # JSON result collectors
 OBJS += json/append_entry.o \
@@ -84,10 +75,7 @@ OBJS += search/schedule/find_by_stanox.o \
 
 # tiplocs
 OBJS += search/tiploc/append_tiploc.o \
-	search/tiploc/append_tiploc_field.o \
-	search/tiploc/find_crs.o \
-	search/tiploc/find_stanox.o \
-	search/tiploc/find_tiploc.o
+	search/tiploc/append_tiploc_field.o
 
 # tiploc index map in results
 OBJS += search/tiploc/map/add.o \
@@ -95,5 +83,15 @@ OBJS += search/tiploc/map/add.o \
 	search/tiploc/map/append_tiplocMap.o \
 	search/tiploc/map/new.o \
 	search/tiploc/map/schedule.o
+
+# Misc utility functions
+OBJS +=	util/idmap.o \
+	util/readDateTime.o \
+	util/readInt.o \
+	util/readString.o \
+	util/readTime.o \
+	util/scheduleTime_getTime.o \
+	util/uid/hash.o \
+	util/uid/parse.o
 
 include ../SubMakefile
