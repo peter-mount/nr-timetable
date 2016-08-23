@@ -11,6 +11,11 @@
 #include <networkrail/timetable/schedule.h>
 #include <area51/string.h>
 #include <area51/comparator.h>
+#include <fcntl.h>
+
+// If USE_MEMMAP is defined then schedules will be read in a memory mapped hashmap
+// rather than reading the tables directly into memory
+#define USE_MEMMAP 1
 
 // Sorts each schedule list in order of start date and stpIndicator
 
@@ -46,6 +51,16 @@ static bool sortSchedules(void *k, void *v, void *c) {
 
 // Callback to read in a schedule
 
+#ifdef USE_MEMMAP
+
+static void *readMemMap(Hashmap *m, void *p) {
+    struct Schedule *s = p;
+    hashmapPut(m, &s->id, s);
+    return s + 1;
+}
+
+#else
+
 static bool read(Hashmap *m, FILE *f) {
     struct Schedule *s = (struct Schedule *) malloc(sizeof (struct Schedule));
     if (s) {
@@ -56,6 +71,20 @@ static bool read(Hashmap *m, FILE *f) {
     }
     return false;
 }
+#endif
+
+#ifdef USE_MEMMAP
+
+static void *readEntryMemMap(Hashmap *m, void *p) {
+    unsigned int *sid = p;
+    int *n = sid + 1;
+    int *ei = n + 1;
+    struct ScheduleEntry *e = (struct ScheduleEntry *) ei;
+    hashmapPut(m, sid, e);
+    return e + *n;
+}
+
+#else
 
 static bool readEntry(Hashmap *m, FILE *f) {
     // Now allocate the true entry of the right size and insert into the map
@@ -81,6 +110,7 @@ static bool readEntry(Hashmap *m, FILE *f) {
 
     return false;
 }
+#endif
 
 static bool mapUid(void *k, void *v, void *c) {
     struct Schedule *s = (struct Schedule *) v;
@@ -99,12 +129,21 @@ void tt_schedule_load_uid() {
 }
 
 int tt_schedule_load(char *filename) {
+
+#ifdef USE_MEMMAP
+    int f = open(filename, O_RDONLY);
+    if (f == -1)
+        return EXIT_FAILURE;
+
+    hashmapReadMemMap(timetable->schedules, readMemMap, f);
+#else
     FILE *f = fopen(filename, "r");
     if (!f)
         return EXIT_FAILURE;
 
     hashmapRead(timetable->schedules, read, f);
     fclose(f);
+#endif
 
     logconsole(TT_LOG_FORMAT_D, "Schedules", hashmapSize(timetable->schedules));
 
@@ -114,12 +153,21 @@ int tt_schedule_load(char *filename) {
 }
 
 int tt_schedule_load_entries(char *filename) {
+
+#ifdef USE_MEMMAP
+    int f = open(filename, O_RDONLY);
+    if (f == -1)
+        return EXIT_FAILURE;
+
+    hashmapReadMemMap(timetable->schedules, readEntryMemMap, f);
+#else
     FILE *f = fopen(filename, "r");
     if (!f)
         return EXIT_FAILURE;
 
     hashmapRead(timetable->scheduleEntry, readEntry, f);
     fclose(f);
+#endif
 
     logconsole(TT_LOG_FORMAT_D, "Entries", hashmapSize(timetable->scheduleEntry));
 
