@@ -41,7 +41,8 @@ OBJS += cif/util/idmap.o \
 	cif/util/readDateTime.o \
 	cif/util/readInt.o \
 	cif/util/readString.o \
-	cif/util/readTime.o
+	cif/util/readTime.o \
+	cif/util/scheduleTime_getTime.o
 
 # Reference data defined within the CIF specs
 OBJS += data/activity.o \
@@ -65,6 +66,7 @@ OBJS += api/schedule/stanox.o \
 # JSON result collectors
 OBJS += json/append_entry.o \
 	json/append_schedule.o \
+	json/append_scheduleTime.o \
 	json/append_time.o \
 	json/result_schedule_full.o \
 	json/result_schedule_index.o

@@ -16,6 +16,9 @@ static char type[] = {
     'O', 'I', 'T'
 };
 
+/*
+ * Append a ScheduleEntry to json
+ */
 void tt_append_scheduleEntry(CharBuffer *b, struct ScheduleEntry *e) {
     if (e) {
         charbuffer_append(b, "{\"type\":\"");
@@ -25,24 +28,12 @@ void tt_append_scheduleEntry(CharBuffer *b, struct ScheduleEntry *e) {
         charbuffer_add(b, '\"');
 
         charbuffer_add(b, ',');
-        tt_append_tiploc_field(b, "tiploc", e->time.tiploc);
+        tt_append_scheduleTime(b, &e->time);
 
         if (e->tiplocseq && e->tiplocseq != ' ') {
             charbuffer_append(b, ",\"tiplocSeq\":\"");
             charbuffer_add(b, e->tiplocseq);
             charbuffer_add(b, '"');
-        }
-
-        if (e->time.pta) append_hhmm(b, "pta", e->time.pta);
-        if (e->time.ptd) append_hhmm(b, "ptd", e->time.ptd);
-
-        if (e->time.wta) append_hhmmss(b, "wta", e->time.wta);
-        if (e->time.wtd) append_hhmmss(b, "wtd", e->time.wtd);
-        if (e->time.wtp) append_hhmmss(b, "wtp", e->time.wtp);
-
-        if (e->time.platform) {
-            charbuffer_append(b, ",\"platform\":");
-            json_append_str(b, tt_idmap_get(e->time.platform));
         }
 
         if (e->line) {
@@ -53,11 +44,6 @@ void tt_append_scheduleEntry(CharBuffer *b, struct ScheduleEntry *e) {
         if (e->path) {
             charbuffer_append(b, ",\"path\":");
             json_append_str(b, tt_idmap_get(e->path));
-        }
-
-        if (e->time.activity) {
-            charbuffer_append(b, ",\"activity\":");
-            ttref_print_activity(b, e->time.activity);
         }
 
         if (e->engAllow) {

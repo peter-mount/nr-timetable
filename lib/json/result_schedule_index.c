@@ -12,17 +12,52 @@
 #include <area51/log.h>
 #include <area51/stream.h>
 
+// collector context data
+
 struct ctx {
-    CharBuffer *b;
-    bool init;
-    bool sep;
     int stanox;
+    CharBuffer *b;
+    List list;
     Hashmap *tiploc;
     Hashmap *activity;
 };
 
+// The data we are interested in
+
+struct ScheduleIndex {
+    struct ScheduleId *id;
+    struct ScheduleTime *origin;
+    struct ScheduleTime *dest;
+    struct ScheduleTime *loc;
+};
+
+/*
+ * Comparator to sort ScheduleIndex by loc.pta or loc.wta (if a pass).
+ * 
+ * This is used to sort the result into time order
+ */
+
+static int comparator(Node *a, Node *b) {
+    int ta = scheduleTime_getTime(((struct ScheduleIndex *) a->value)->loc);
+    int tb = scheduleTime_getTime(((struct ScheduleIndex *) b->value)->loc);
+
+    return ta < tb ? -1 : ta > tb ? 1 : 0;
+}
+
+/*
+ * Frees ctx and all entries within it
+ */
 static void freeCtx(struct ctx *ctx) {
     if (ctx) {
+        Node *n = list_getHead(&ctx->list);
+        while (list_isNode(n)) {
+            Node *next = list_getNext(n);
+            list_remove(n);
+            // This will free n and the ScheduleIndex instance
+            node_free(n);
+            n = next;
+        }
+
         if (ctx->tiploc)
             hashmapFree(ctx->tiploc);
 
@@ -33,58 +68,58 @@ static void freeCtx(struct ctx *ctx) {
     }
 }
 
-static void init(struct ctx *ctx) {
-    if (ctx->init) {
-        charbuffer_append(ctx->b, "{\"schedule\":[");
-        ctx->init = false;
-    }
-}
-
-static void appendTpl(struct ctx *ctx, struct ScheduleEntry *e, char *label) {
+/*
+ * Appends a named entry into the json. This is either origin, dest or loc
+ */
+static void appendTpl(struct ctx *ctx, struct ScheduleTime *t, char *label) {
     charbuffer_append(ctx->b, ",\"");
     charbuffer_append(ctx->b, label);
     charbuffer_append(ctx->b, "\":{");
-    tt_append_tiploc_field(ctx->b, "tiploc", e->time.tiploc);
-    //charbuffer_add(ctx->b, ',');
+    tt_append_scheduleTime(ctx->b, t);
     charbuffer_add(ctx->b, '}');
 
     // Add tiploc to reference
-    mapTiploc_mapScheduleEntry(ctx->tiploc, e);
+    mapTiploc_addTiploc(ctx->tiploc, t->tiploc);
 
     // Add activity
-    ttref_add_activity(ctx->activity, e->time.activity);
+    ttref_add_activity(ctx->activity, t->activity);
 }
 
-static void append(struct ctx *ctx, struct Schedule *s, struct ScheduleEntry *entries, int index) {
-    if (ctx->sep)
-        charbuffer_add(ctx->b, ',');
-    else
-        ctx->sep = true;
+/*
+ * Appends a ScheduleIndex to the result.
+ * 
+ * @param s Schedule
+ * @param entries ScheduleEntry array for this schedule
+ * @param index index in entries of the entry for the required stanox
+ */
+static void appendEntry(struct ctx *ctx, struct Schedule *s, struct ScheduleEntry *entries, int index) {
+    struct ScheduleIndex *i = malloc(sizeof (struct ScheduleIndex));
+    if (i) {
+        i->id = &s->id;
+        i->origin = &entries[0].time;
+        i->dest = &entries[s->numEntries - 1].time;
+        i->loc = &entries[index].time;
 
-    charbuffer_append(ctx->b, "{\"uid\":");
-    json_append_str(ctx->b, s->id.uid);
-
-    charbuffer_append(ctx->b, ",\"stpInd\":\"");
-    charbuffer_add(ctx->b, s->id.stpInd);
-    charbuffer_add(ctx->b, '"');
-
-    if (entries) {
-        appendTpl(ctx, &entries[0], "origin");
-        appendTpl(ctx, &entries[s->numEntries - 1], "dest");
-        appendTpl(ctx, &entries[index], "loc");
+        Node *n = node_alloc((char*) i);
+        if (!n)
+            free(i);
+        else
+            list_addTail(&ctx->list, n);
     }
-
-    charbuffer_add(ctx->b, '}');
 }
 
+/*
+ * Accepts value into the collector.
+ * 
+ * This will parse the Schedule for any entries for the stanox of interest and
+ * add a ScheduleIndex entry into the result
+ */
 static void next(void *c, void *v) {
     if (c) {
         struct ctx *ctx = c;
         CharBuffer *b = ctx->b;
         struct Schedule *s = (struct Schedule *) v;
         struct ScheduleEntry *entries = hashmapGet(timetable->scheduleEntry, &s->sid);
-
-        init(ctx);
 
         // Loop and find our stanox. Do the entire schedule as a stanox can exist
         // multiple times on circular & long schedules.
@@ -93,7 +128,7 @@ static void next(void *c, void *v) {
                 short tiploc = entries[i].time.tiploc;
                 struct TTTiploc *tpl = hashmapGet(timetable->idTiploc, &tiploc);
                 if (tpl && tpl->stanox == ctx->stanox)
-                    append(ctx, s, entries, i);
+                    appendEntry(ctx, s, entries, i);
             }
     }
 }
@@ -102,7 +137,33 @@ static void *finish(void *c) {
     if (c) {
         struct ctx *ctx = c;
 
-        init(ctx);
+        // Sort result into time order
+        list_sort(&ctx->list, comparator);
+
+        // Write the schedules
+        charbuffer_append(ctx->b, "{\"schedule\":[");
+        Node *n = list_getHead(&ctx->list);
+        while (list_isNode(n)) {
+            struct ScheduleIndex *idx = n->value;
+
+            if (!list_isHead(n))
+                charbuffer_add(ctx->b, ',');
+
+            charbuffer_append(ctx->b, "{\"uid\":");
+            json_append_str(ctx->b, idx->id->uid);
+
+            charbuffer_append(ctx->b, ",\"stpInd\":\"");
+            charbuffer_add(ctx->b, idx->id->stpInd);
+            charbuffer_add(ctx->b, '"');
+
+            appendTpl(ctx, idx->origin, "origin");
+            appendTpl(ctx, idx->dest, "dest");
+            appendTpl(ctx, idx->loc, "loc");
+
+            charbuffer_add(ctx->b, '}');
+
+            n = list_getNext(n);
+        }
 
         charbuffer_append(ctx->b, "],\"tiploc\":{");
         mapTiploc_appendIndex(ctx->b, ctx->tiploc);
@@ -130,8 +191,8 @@ int tt_schedule_result_index(Stream *s, CharBuffer *b, int stanox) {
     if (ctx) {
         memset(ctx, 0, sizeof (struct ctx));
         ctx->b = b;
-        ctx->sep = false;
-        ctx->init = true;
+        list_init(&ctx->list);
+        //ctx->sep = false;
         ctx->stanox = stanox;
         ctx->tiploc = mapTiploc_new();
         ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);

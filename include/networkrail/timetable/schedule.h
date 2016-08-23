@@ -51,25 +51,21 @@ extern "C" {
     struct ScheduleTime {
         // Tiploc (currently 10k) room for 500 entries before increasing this
         unsigned int tiploc : 14;
+        // Public timetable time in minutes of day
         unsigned int pta : TIME_KEY_SIZE;
         unsigned int ptd : TIME_KEY_SIZE;
         // Working timetable in seconds of day
         unsigned int wta : TIME_KEY_SIZE;
         unsigned int wtd : TIME_KEY_SIZE;
         unsigned int wtp : TIME_KEY_SIZE;
-        //
+        // Activity at this location
         unsigned long activity : 36;
+        // Platform at this location
         unsigned int platform : IDKEY_SIZE;
     };
-
-    // An entry in the schedule index
-
-    struct ScheduleIndex {
-        struct ScheduleId id;
-        struct ScheduleTime origin;
-        struct ScheduleTime dest;
-        struct ScheduleTime loc;
-    };
+    
+    // Retrieve a usable time from ScheduleTime, in seconds from midnight
+    extern int scheduleTime_getTime(struct ScheduleTime *);
 
     // CIF User Spec v29 FINAL Page 20,21,23
     // TODO P22 change en-route
@@ -155,6 +151,9 @@ extern "C" {
     extern int tt_schedule_index_stanox();
     extern int tt_write_index_stanox(char *);
 
+    // Render ScheduleTime to JSON
+    extern void tt_append_scheduleTime(CharBuffer *, struct ScheduleTime *);
+    
     // Stream collector to render schedules into a charbuffer
     extern int tt_schedule_result_full(Stream *s, CharBuffer *);
     // Stream collector to render schedule index at a location into a charbuffer
