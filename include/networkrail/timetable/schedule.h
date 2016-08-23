@@ -160,9 +160,7 @@ extern "C" {
     extern int tt_schedule_result_index(Stream *s, CharBuffer *, int);
 
     // rest services
-    extern void tt_get_schedules_by_stanox(CharBuffer *, const char *);
-
-    extern void tt_get_schedules_by_uid(CharBuffer *, const char *);
+    
     extern int tt_flatMap_schedules_by_uid(Stream *);
 
     // Searches

@@ -16,7 +16,7 @@ static bool callback(Node *node, void *context) {
 void tt_log_header(char *task) {
     struct tm tm;
     char tm1[32], tm2[32], tm3[32];
-    localtime_r(&timetable->header.importTime, &tm);
+    localtime_r(&timetable->header.extractTime, &tm);
     strftime(tm1, 30, "%Y-%m-%d %H:%M:%S", &tm);
 
     localtime_r(&timetable->header.userStart, &tm);
@@ -36,7 +36,7 @@ int tt_parse_header(struct CIFParser *parser) {
     cif_readString(parser->buf, 2, p->header.mainframeId, TT_HEADER_MAINFRAMEID);
 
     struct tm tm;
-    p->header.importTime = cif_readDate_ddmmyyhhmm(parser->buf, 22, &tm);
+    p->header.extractTime = cif_readDate_ddmmyyhhmm(parser->buf, 22, &tm);
 
     cif_readString(parser->buf, 32, p->header.fileRef, TT_HEADER_FILE_REF);
     cif_readString(parser->buf, 39, p->header.lastFileRef, TT_HEADER_FILE_REF);

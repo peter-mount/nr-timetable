@@ -49,7 +49,7 @@ stamp-h1
 Makefile
 SubMakefile
 config.cache
-/include/area51/charbuffer.h
+/lib/api/status-int.h
 
 # Generated package files
 /package/debian/control

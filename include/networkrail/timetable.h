@@ -51,10 +51,20 @@ extern "C" {
     struct TTHeader {
         // Time of import
         time_t importTime;
+        // Time of extract by Network Rail
+        time_t extractTime;
+        // Mainframe Id of format TPS.Uxxxxxx.PDyymmdd
+        // Where xxxxxx is username (should always be DFROC1)
+        //       yymmdd is date extract relates to
         char mainframeId[TT_HEADER_MAINFRAMEID + 1];
+        // File ref is xxxxxxa where xxxxxx should always be DFROC1)
+        // and a is A-Z i.e. 26 updates before cycling back
         char fileRef[TT_HEADER_FILE_REF + 1];
+        // As fileRef, the previous file (usually the previous day)
         char lastFileRef[TT_HEADER_FILE_REF + 1];
+        // Start date the schedules cover
         time_t userStart;
+        // End date the schedules cover
         time_t userEnd;
     };
 

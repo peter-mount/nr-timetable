@@ -587,7 +587,9 @@ PACKAGE_URL=''
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 PKGBUILD
-PKGBANNER
+PKGDATE
+PKGREL
+PKGVER
 CCFLAGS
 DIRECTORIES
 OBJEXT
@@ -2567,9 +2569,13 @@ LDFLAGS=$LDFLAGS
 # Extract some details out of our APKBuild file, mainly architecture, version etc
 head APKBUILD >/tmp/apkbuild
 . /tmp/apkbuild
-PKGBANNER="$pkgdesc"
+PKGVER="$pkgver"
 
-date=$(date)
+PKGREL="$pkgrel"
+
+date=$(date -u "+%FT%TZ")
+PKGDATE="$date"
+
 PKGBUILD="$pkgname ${pkgver}r${pkgrel} $arch $date"
 
 

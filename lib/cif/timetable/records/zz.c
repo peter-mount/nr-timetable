@@ -12,6 +12,9 @@ int tt_parse_trailer(struct CIFParser *parser) {
     // Complete any previous schedule
     tt_parse_complete_schedule(p);
 
+    // Record this moment as the import time
+    time(&timetable->header.importTime);
+
     logconsole(TT_LOG_FORMAT_D, "Lines read", parser->lineno);
     logconsole(TT_LOG_FORMAT_D, "Bytes read", parser->fileLength);
 

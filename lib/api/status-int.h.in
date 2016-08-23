@@ -1,0 +1,4 @@
+#define PKGVER   "@PKGVER@"
+#define PKGREL   "@PKGREL@"
+#define PKGDATE  "@PKGDATE@"
+#define PKGBUILD "@PKGBUILD@"

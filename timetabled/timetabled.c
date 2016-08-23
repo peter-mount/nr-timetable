@@ -10,6 +10,7 @@
 #include <area51/hashmap.h>
 #include <area51/rest.h>
 #include <networkrail/timetable.h>
+#include <networkrail/timetable/api.h>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -151,6 +152,8 @@ int main(int argc, char** argv) {
 
     webserver_add_search_str("/schedule/uid", tt_get_schedules_by_uid);
     webserver_add_search_str("/schedule/stanox", tt_get_schedules_by_stanox);
+
+    webserver_add_static("/status", tt_api_status);
 
     logconsole("Starting webserver on port %d", webserver.port);
     webserver_start();

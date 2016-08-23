@@ -39,8 +39,10 @@ AC_SUBST([LDFLAGS],[$LDFLAGS])
 # Extract some details out of our APKBuild file, mainly architecture, version etc
 head APKBUILD >/tmp/apkbuild
 . /tmp/apkbuild
-AC_SUBST([PKGBANNER],["$pkgdesc"])
-date=$(date)
+AC_SUBST([PKGVER],["$pkgver"])
+AC_SUBST([PKGREL],["$pkgrel"])
+date=$(date -u "+%FT%TZ")
+AC_SUBST([PKGDATE],["$date"])
 AC_SUBST([PKGBUILD],["$pkgname ${pkgver}r${pkgrel} $arch $date"])
 
 # Build make files
