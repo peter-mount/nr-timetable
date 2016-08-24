@@ -30,11 +30,6 @@ void tt_append_scheduleEntry(CharBuffer *b, struct ScheduleEntry *e) {
         charbuffer_add(b, ',');
         tt_append_scheduleTime(b, &e->time);
 
-        if (e->tiplocseq && e->tiplocseq != ' ') {
-            charbuffer_append(b, ",\"tiplocSeq\":");
-            json_append_int(b, e->tiplocseq);
-        }
-
         if (e->line) {
             charbuffer_append(b, ",\"line\":");
             json_append_str(b, tt_idmap_get(e->line));

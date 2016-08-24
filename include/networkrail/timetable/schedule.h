@@ -51,6 +51,8 @@ extern "C" {
     struct ScheduleTime {
         // Tiploc (currently 10k) room for 500 entries before increasing this
         unsigned int tiploc : 14;
+        // Tiploc sequence (for circular routes), 0-9
+        unsigned int tiplocseq : 4;
         // Public timetable time in minutes of day
         unsigned int pta : TIME_KEY_SIZE;
         unsigned int ptd : TIME_KEY_SIZE;
@@ -71,12 +73,10 @@ extern "C" {
     // TODO P22 change en-route
 
     struct ScheduleEntry {
-        //Node node;
+        struct ScheduleTime time;
+
         // "O", "I", "T" for Origin etc, i.e. LO, LI, LT
         unsigned int type : 2;
-        struct ScheduleTime time;
-        // Tiploc sequence (for circular routes), 0-9
-        unsigned int tiplocseq : 4;
 
         unsigned long line : IDKEY_SIZE;
         unsigned long path : IDKEY_SIZE;
@@ -157,7 +157,7 @@ extern "C" {
     // Stream collector to render schedules into a charbuffer
     extern int tt_schedule_result_full(Stream *s, CharBuffer *);
     // Stream collector to render schedule index at a location into a charbuffer
-    extern int tt_schedule_result_index(Stream *s, CharBuffer *, int);
+    extern int tt_schedule_result_index(Stream *s, CharBuffer *, int, int, bool);
 
     // rest services
 

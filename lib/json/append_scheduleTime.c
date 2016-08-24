@@ -13,6 +13,11 @@
 void tt_append_scheduleTime(CharBuffer *b, struct ScheduleTime *t) {
     tt_append_tiploc_field(b, "tiploc", t->tiploc);
 
+    if (t->tiplocseq) {
+        charbuffer_append(b, ",\"seq\":");
+        json_append_int(b, t->tiplocseq);
+    }
+
     if (t->pta) append_hhmm(b, "pta", t->pta);
     if (t->ptd) append_hhmm(b, "ptd", t->ptd);
 

@@ -33,7 +33,7 @@ int tt_parse_loc_origin(struct CIFParser *parser) {
     // Tiploc suffix for circular routes
     int tm;
     offset = cif_readInt_r(parser->buf, offset, &tm, 1);
-    e->tiplocseq = tm;
+    e->time.tiplocseq = tm;
 
     offset = cif_readSeconds_hhmmh_r(parser->buf, offset, &tm);
     e->time.wtd = tm;

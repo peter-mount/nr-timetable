@@ -19,6 +19,8 @@
 
 struct ctx {
     int stanox;
+    int hour;
+    bool filterHour;
     CharBuffer *b;
     List list;
     Hashmap *tiploc;
@@ -48,13 +50,13 @@ static int timeComparator(Node *a, Node *b) {
 }
 
 /*
- * Comparator to sort by UID.
+ * Comparator to sort by UID, tiploc, tiplocseq and stpInd
  * 
  * This is used to remove duplicates
  */
 static char *STP = "CNOP";
 
-static int uidComparator(Node *a, Node *b) {
+static int duplicateComparator(Node *a, Node *b) {
     struct ScheduleIndex *ai = a->value;
     struct ScheduleIndex *bi = b->value;
 
@@ -62,6 +64,20 @@ static int uidComparator(Node *a, Node *b) {
 
     // Sort by start
     if (!r) r = comparator_time_t(&ai->id->start, &bi->id->start);
+
+    // Sort by tiploc
+    if (!r) {
+        int ta = ai->loc->tiploc;
+        int tb = bi->loc->tiploc;
+        r = comparator_int(&ta, &tb);
+    }
+
+    // Sort by tiplocseq
+    if (!r) {
+        int ta = ai->loc->tiplocseq;
+        int tb = bi->loc->tiplocseq;
+        r = comparator_int(&ta, &tb);
+    }
 
     // If equal sort by STP
     if (!r) r = comparator_long(
@@ -82,21 +98,30 @@ static int uidComparator(Node *a, Node *b) {
  */
 static void removeDuplicates(List *list) {
     // Sort into UID order
-    list_sort(list, uidComparator);
+    list_sort(list, duplicateComparator);
 
     // Remove duplicates
     char *uid = NULL;
+    int tiploc = 0;
+    int seq = 0;
     Node *n = list_getHead(list);
     while (list_isNode(n)) {
         Node *next = list_getNext(n);
 
         struct ScheduleIndex *idx = n->value;
-        if (uid && strcmp(uid, idx->id->uid) == 0) {
+
+        if (!list_isHead(n) &&
+                strcmp(uid, idx->id->uid) == 0 &&
+                tiploc == idx->loc->tiploc && seq == idx->loc->tiplocseq
+                ) {
             // This will remove & free n and the ScheduleIndex instance
             list_remove(n);
             node_free(n);
-        } else
+        } else {
             uid = idx->id->uid;
+            tiploc = idx->loc->tiploc;
+            seq = idx->loc->tiplocseq;
+        }
 
         n = next;
     }
@@ -172,6 +197,8 @@ static void appendEntry(struct ctx *ctx, struct Schedule *s, struct ScheduleEntr
  * This will parse the Schedule for any entries for the stanox of interest and
  * add a ScheduleIndex entry into the result
  */
+#define getHour(ctx,time) ((ctx)->hour==((scheduleTime_getTime(&entries[i].time) / 3600) % 24))
+
 static void next(void *c, void *v) {
     if (c) {
         struct ctx *ctx = c;
@@ -185,7 +212,9 @@ static void next(void *c, void *v) {
             for (int i = 0; i < s->numEntries; i++) {
                 short tiploc = entries[i].time.tiploc;
                 struct TTTiploc *tpl = hashmapGet(timetable->idTiploc, &tiploc);
-                if (tpl && tpl->stanox == ctx->stanox)
+                if (tpl && tpl->stanox == ctx->stanox
+                        && (!ctx->filterHour || ctx->hour == ((scheduleTime_getTime(&entries[i].time) / 3600) % 24))
+                        )
                     appendEntry(ctx, s, entries, i);
             }
     }
@@ -260,14 +289,15 @@ static void *finish(void *c) {
  * regular tiploc and activity lookup tables
  * 
  */
-int tt_schedule_result_index(Stream *s, CharBuffer *b, int stanox) {
+int tt_schedule_result_index(Stream *s, CharBuffer *b, int stanox, int hour, bool filterHour) {
     struct ctx *ctx = malloc(sizeof (struct ctx));
     if (ctx) {
         memset(ctx, 0, sizeof (struct ctx));
         ctx->b = b;
         list_init(&ctx->list);
-        //ctx->sep = false;
         ctx->stanox = stanox;
+        ctx->hour = hour;
+        ctx->filterHour = filterHour;
         ctx->tiploc = mapTiploc_new();
         ctx->activity = hashmapCreate(10, hashmapStringHash, hashmapStringEquals);
 

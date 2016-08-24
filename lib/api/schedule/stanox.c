@@ -103,7 +103,7 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
         r = tt_filter_schedule_contains_stanox_hour(stream, &t, stanox);
 
     // Now collect using the schedule result collector and run
-    if (!r) r = tt_schedule_result_index(stream, b, stanox);
+    if (!r) r = tt_schedule_result_index(stream, b, stanox, tm.tm_hour, hourPresent);
 
     //stream_debug(stream);
     if (!r)
