@@ -41,12 +41,13 @@ extern "C" {
 #define TT_LOG_FORMAT_S TT_LOG_FORMAT_P "%s"
 
     // The various file suffixes
-#define TT_SUFFIX_META      ".mta"
-#define TT_SUFFIX_TIPLOC    ".tpl"
-#define TT_SUFFIX_SCHEDULES ".sch"
-#define TT_SUFFIX_ENTRIES   ".ent"
-#define TT_SUFFIX_INDEX     ".stx"
-#define TT_SUFFIX_UID_INDEX ".uid"
+#define TT_SUFFIX_META          ".mta"
+#define TT_SUFFIX_TIPLOC        ".tpl"
+#define TT_SUFFIX_SCHEDULES     ".sch"
+#define TT_SUFFIX_ENTRIES       ".ent"
+#define TT_SUFFIX_INDEX         ".stx"
+#define TT_SUFFIX_UID_INDEX     ".uid"
+#define TT_SUFFIX_ASSOCIATIONS  ".ass"
 
     struct TTHeader {
         // Time of import
@@ -86,6 +87,9 @@ extern "C" {
 
         // Unique ID in database for the schedule
         unsigned int sid;
+        
+        // Unique ID in database for associations
+        unsigned int aid;
 
         // The current schedule header
         struct TTHeader header;
@@ -93,8 +97,11 @@ extern "C" {
         // Tiplocs
         short locSeq;
         Hashmap *loc;
+        
         // Association data
+        // Parsing this contain's Lists, when running an array of data
         Hashmap *assoc;
+        
         // Schedule data
         Hashmap *schedules;
         // ScheduleEntries

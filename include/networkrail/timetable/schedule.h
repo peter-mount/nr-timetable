@@ -21,25 +21,58 @@ extern "C" {
 
 #define TT_UID_LENGTH 6
 
+    // Tiploc (currently 10k) room for 500 entries before increasing this
+#define TT_TIPLOC_BIT_SIZE 14
+
+    // Tiploc Sequence 0-9
+#define TT_TIPLOCSEQ_BIT_SIZE 4
+
     // The Schedule Primary Key
 
     struct ScheduleId {
+        // Schedule UID
         char uid[TT_UID_LENGTH + 1];
+        // start date
         time_t start;
+        // STP Indicator, C, N, O or P with C higher precedence to P
+        char stpInd;
+    };
+
+    // Association ID
+
+    struct AssocID {
+        // Unique ID in the timetable for this entry
+        unsigned int id;
+        // Main UID
+        char mainUid[TT_UID_LENGTH + 1];
+        // Associated UID
+        char assUid[TT_UID_LENGTH + 1];
+        // start date
+        time_t start;
+        // end date
+        time_t end;
+        // STP Indicator, C, N, O or P with C higher precedence to P
         char stpInd;
     };
 
     // Association
 
     struct Assoc {
-        struct ScheduleId id;
-        char tiploc[TIPLOC_LENGTH + 1];
-        char baseLocSuffix;
-        char assocLocSuffix;
-        char assocType;
-        char days;
-        char cat;
-        char dateInd;
+        struct AssocID id;
+        // Days association applies
+        unsigned int daysRun : 7;
+        // Ignore (  ), Join (JJ), Split (VV) or Next (NP)
+        unsigned int category : 2;
+        // Date Ind: Standard (S), Over next midnight (N), Over previous midnight (P)
+        unsigned int dateInd : 2;
+        // Tiploc of association
+        unsigned int tiploc : TT_TIPLOC_BIT_SIZE;
+        // Tiploc sequence on main schedule
+        unsigned int baseSeq : TT_TIPLOCSEQ_BIT_SIZE;
+        // Tiploc sequence on assoc schedule
+        unsigned int assocSeq : TT_TIPLOCSEQ_BIT_SIZE;
+        // Association type, 0=passenger use, 1=operating use
+        unsigned int type : 1;
     };
 
     // Bits required to store time of day
@@ -50,9 +83,9 @@ extern "C" {
 
     struct ScheduleTime {
         // Tiploc (currently 10k) room for 500 entries before increasing this
-        unsigned int tiploc : 14;
+        unsigned int tiploc : TT_TIPLOC_BIT_SIZE;
         // Tiploc sequence (for circular routes), 0-9
-        unsigned int tiplocseq : 4;
+        unsigned int tiplocseq : TT_TIPLOCSEQ_BIT_SIZE;
         // Public timetable time in minutes of day
         unsigned int pta : TIME_KEY_SIZE;
         unsigned int ptd : TIME_KEY_SIZE;
@@ -131,11 +164,13 @@ extern "C" {
     extern int tt_schedule_write_entries(char *);
     extern int tt_write_index_stanox(char *);
     extern int tt_schedule_lookup_write(char *);
+    extern int tt_schedule_write_associations(char *);
 
     extern int tt_schedule_load(char *);
     extern int tt_schedule_load_entries(char *);
     extern int tt_schedule_index_load(char *);
     extern int tt_schedule_lookup_load(char *);
+    extern int tt_schedule_load_associations(char *);
 
     extern void tt_append_schedule(CharBuffer *b, struct Schedule *e);
     extern void tt_append_schedule_node(CharBuffer *b, Node *n);

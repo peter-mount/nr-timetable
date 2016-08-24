@@ -119,6 +119,12 @@ static int opendb() {
     if (ret)
         return EXIT_FAILURE;
 
+    db = getfile(database, TT_SUFFIX_ASSOCIATIONS);
+    ret = tt_schedule_load_associations(db);
+    free(db);
+    if (ret)
+        return EXIT_FAILURE;
+            
     return EXIT_SUCCESS;
 }
 

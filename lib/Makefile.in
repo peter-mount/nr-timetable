@@ -19,6 +19,9 @@ OBJS +=	cif/files/add.o \
 	cif/parser/parse.o \
 	cif/parser/parseFile.o
 
+OBJS += cif/timetable/assoc/read.o \
+	cif/timetable/assoc/save.o
+
 OBJS += cif/timetable/getTiploc.o \
 	cif/timetable/initParser.o \
 	cif/timetable/new.o \

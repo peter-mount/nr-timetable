@@ -82,8 +82,6 @@ void tt_get_schedules_by_stanox(CharBuffer *b, const char *uri) {
     if (t < now)
         return;
 
-    logconsole("Date %04d-%02d-%02dT%02d hourPresent %d", tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, hourPresent);
-
     // Get a Stream of struct Schedule that pass through this stanox
     Stream *stream = tt_search_schedules_by_stanox(stanox);
     if (!stream)

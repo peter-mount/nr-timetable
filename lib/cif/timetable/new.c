@@ -10,11 +10,13 @@ struct TimeTable *timetable_new() {
     memset(tt, 0, sizeof (struct TimeTable));
 
     tt->loc = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
-    tt->assoc = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
     tt->schedules = hashmapCreate(100, hashmapScheduleIdHash, hashmapScheduleIdEquals);
     tt->scheduleEntry = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
     tt->scheduleSID = hashmapCreate(100, hashmapIntHash, hashmapIntEquals);
 
+    // Associations list on UID (2 entries, one for mainUid and assocUid)
+    tt->assoc = hashmapCreate(100, hashmapStringHash, hashmapStringEquals);
+    
     // api only
     
     tt->idTiploc = hashmapCreate(100, hashmapShortHash, hashmapShortEquals);

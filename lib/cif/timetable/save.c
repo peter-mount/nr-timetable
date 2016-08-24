@@ -79,6 +79,12 @@ int timetable_save(struct TimeTable *tt, char *filename) {
         free(db);
     }
 
+    if (!ret) {
+        db = genFilename(filename, TT_SUFFIX_ASSOCIATIONS);
+        ret = tt_schedule_write_associations(db);
+        free(db);
+    }
+
     logconsole(ret ? "Failed to write database %s" : "Completed database %s", filename);
     return ret ? EXIT_FAILURE : EXIT_SUCCESS;
 }
