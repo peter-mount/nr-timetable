@@ -29,24 +29,25 @@ int verbose = 0;
 char *database = NULL;
 
 struct TimeTable *timetable;
+static WEBSERVER *webserver;
 
 static int about() {
     logconsole("Usage: timetabled [-ip4] [-ip6] [-p{port}] database\n");
     return EXIT_FAILURE;
 }
 
-static int parseargs(int argc, char** argv) {
+static int parseargs(WEBSERVER *webserver, int argc, char** argv) {
     for (int i = 1; i < argc; i++) {
         char *s = argv[i];
         if (s[0] == '-' && s[1] != 0) {
             if (strncmp("-ip4", s, 4) == 0)
-                webserver_enableIPv4();
+                webserver_enableIPv4(webserver);
             else if (strncmp("-ip6", s, 4) == 0)
-                webserver_enableIPv6();
+                webserver_enableIPv6(webserver);
             else switch (s[1]) {
                     case 'p':
                         if (s[2])
-                            webserver.port = atoi(&s[2]);
+                            webserver_setPort(webserver, atoi(&s[2]));
                         break;
 
                     case 'v':
@@ -65,7 +66,7 @@ static int parseargs(int argc, char** argv) {
         }
     }
 
-    if (webserver.port < 1 || webserver.port > 65535 || !database)
+    if (webserver_getPort(webserver) < 1 || webserver_getPort(webserver) > 65535 || !database)
         return about();
 
     return 0;
@@ -124,16 +125,16 @@ static int opendb() {
     free(db);
     if (ret)
         return EXIT_FAILURE;
-            
+
     return EXIT_SUCCESS;
 }
 
 int main(int argc, char** argv) {
     timetable = timetable_new();
 
-    webserver_initialise();
+    webserver = webserver_new();
 
-    int rc = parseargs(argc, argv);
+    int rc = parseargs(webserver, argc, argv);
     if (rc)
         return rc;
 
@@ -141,27 +142,27 @@ int main(int argc, char** argv) {
     if (rc)
         return rc;
 
-    webserver_set_defaults();
+    webserver_set_defaults(webserver);
 
     // 3alpha & crs are the same thing
-    webserver_add_search_str("/tiploc/3alpha", tt_find_tiploc_by_crs);
-    webserver_add_search_str("/tiploc/crs", tt_find_tiploc_by_crs);
+    webserver_add_search_str(webserver, "/tiploc/3alpha", tt_find_tiploc_by_crs);
+    webserver_add_search_str(webserver, "/tiploc/crs", tt_find_tiploc_by_crs);
 
-    webserver_add_search_str("/tiploc/tiploc", tt_find_tiploc);
-    webserver_add_search_int("/tiploc/stanox", tt_find_tiploc_by_stanox);
+    webserver_add_search_str(webserver, "/tiploc/tiploc", tt_find_tiploc);
+    webserver_add_search_int(webserver, "/tiploc/stanox", tt_find_tiploc_by_stanox);
 
-    webserver_add_search_str("/schedule/uid", tt_get_schedules_by_uid);
-    webserver_add_search_str("/schedule/stanox", tt_get_schedules_by_stanox);
+    webserver_add_search_str(webserver, "/schedule/uid", tt_get_schedules_by_uid);
+    webserver_add_search_str(webserver, "/schedule/stanox", tt_get_schedules_by_stanox);
 
-    webserver_add_static("/station", tt_api_station_index);
-    webserver_add_search_str("/station", tt_api_station);
+    webserver_add_static(webserver, "/station", tt_api_station_index);
+    webserver_add_search_str(webserver, "/station", tt_api_station);
 
-    webserver_add_handler("/search", tt_api_station_search);
+    webserver_add_handler(webserver, "/search", tt_api_station_search, NULL);
 
-    webserver_add_static("/status", tt_api_status);
+    webserver_add_static(webserver, "/status", tt_api_status);
 
-    logconsole("Starting webserver on port %d", webserver.port);
-    webserver_start();
+    logconsole("Starting webserver on port %d", webserver_getPort(webserver));
+    webserver_start(webserver);
 
     while (1) {
         sleep(60);

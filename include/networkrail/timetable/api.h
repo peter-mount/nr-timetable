@@ -19,8 +19,8 @@ extern "C" {
 
     extern void tt_api_station_index(CharBuffer *);
 
-    extern int tt_api_station_search(struct MHD_Connection *, WEBSERVER_HANDLER *, const char *);
-    
+    extern int tt_api_station_search(WEBSERVER_REQUEST *);
+
     // /status service
     extern void tt_api_status(CharBuffer *b);
 

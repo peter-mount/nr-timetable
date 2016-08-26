@@ -2547,7 +2547,7 @@ CCFLAGS="$CCFLAGS -fPIC"
 
 # Final list of libraries required in the correct sequence.
 
-LDFLAGS="$LDFLAGS -larea51-rest -larea51 -ljson-c -lmicrohttpd -lcurl"
+LDFLAGS="$LDFLAGS -larea51-rest -larea51-httpd -larea51 -ljson-c -lmicrohttpd -lcurl"
 
 # Our core library (i.e. under lib)
 LDFLAGS="-ltimetable $LDFLAGS"

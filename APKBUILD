@@ -9,8 +9,8 @@ url="https://area51.onl/"
 license="ASL 2.0"
 source=""
 subpackages="$pkgname-dev"
-depends="libarea51 libarea51-rest json-c libmicrohttpd curl"
-depends_dev="libarea51-dev libarea51-rest-dev json-c-dev libmicrohttpd-dev curl-dev"
+depends="libarea51 libarea51-rest libarea51-httpd json-c libmicrohttpd curl"
+depends_dev="libarea51-dev libarea51-rest-dev libarea51-httpd-dev json-c-dev libmicrohttpd-dev curl-dev"
 #triggers="$pkgname-bin.trigger=/lib:/usr/lib:/usr/glibc-compat/lib"
 
 builddeps() {
@@ -29,7 +29,7 @@ package() {
 }
 
 dev() {
-  depends="$pkgname $depends_dev"
+# depends="$pkgname $depends_dev"
   mkdir -p "$subpkgdir/usr/include"
   cp -rp build/package/usr/include/* "$subpkgdir/usr/include"
 }

@@ -108,13 +108,13 @@ static void search(CharBuffer *b, const char *key) {
  * This is one of our few API's that accepts a query string - mainly to support
  * jQuery autocomplete components.
  */
-int tt_api_station_search(struct MHD_Connection * connection, WEBSERVER_HANDLER *handler, const char *url) {
+int tt_api_station_search(WEBSERVER_REQUEST *request) {
 
     CharBuffer b;
     charbuffer_init(&b);
 
-    search(&b, MHD_lookup_connection_value(connection, MHD_GET_ARGUMENT_KIND, "key"));
+    search(&b, webserver_getRequestParameter(request, "term"));
 
     struct MHD_Response *response = MHD_create_response_from_buffer(b.pos, b.buffer, MHD_RESPMEM_MUST_FREE);
-    return queueResponse(connection, &response);
+    return webserver_queueResponse(request, &response);
 }
