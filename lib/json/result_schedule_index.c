@@ -34,6 +34,7 @@ struct ScheduleIndex {
     struct ScheduleTime *origin;
     struct ScheduleTime *dest;
     struct ScheduleTime *loc;
+    long trainId;
 };
 
 /*
@@ -182,6 +183,7 @@ static void appendEntry(struct ctx *ctx, struct Schedule *s, struct ScheduleEntr
         i->origin = &entries[0].time;
         i->dest = &entries[s->numEntries - 1].time;
         i->loc = &entries[index].time;
+        i->trainId = s->trainId;
 
         Node *n = node_alloc((char*) i);
         if (!n)
@@ -246,6 +248,11 @@ static void *finish(void *c) {
             charbuffer_append(ctx->b, ",\"stpInd\":\"");
             charbuffer_add(ctx->b, idx->id->stpInd);
             charbuffer_add(ctx->b, '"');
+
+            if (idx->trainId) {
+                charbuffer_append(ctx->b, ",\"trainId\":");
+                json_append_str(ctx->b, tt_idmap_get(idx->trainId));
+            }
 
             // Display time
             append_hhmmss(ctx->b, "time", scheduleTime_getTime(idx->loc));

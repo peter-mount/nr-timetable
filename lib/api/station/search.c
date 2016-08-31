@@ -120,5 +120,6 @@ int tt_api_station_search(WEBSERVER_REQUEST *request) {
     charbuffer_free(b);
     
     struct MHD_Response *response = MHD_create_response_from_buffer(len, buf, MHD_RESPMEM_MUST_FREE);
+    MHD_add_response_header(response, "Access-Control-Allow-Origin", "*");
     return webserver_queueResponse(request, &response);
 }
